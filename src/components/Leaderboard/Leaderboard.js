@@ -74,7 +74,7 @@ const Leaderboard = () => {
 
     return (
         <div>
-            <h1>Leaderboard</h1>
+            <h1>GW Leaderboard</h1>
             <nav>
                 <button onClick={() => setCurrentFormat('ownBall')}>Own Ball</button>
                 <button onClick={() => setCurrentFormat('alternateShot')}>Alternate Shot</button>
