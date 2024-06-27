@@ -180,7 +180,7 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
                             type="number"
                             value={localScores[index]}
                             onChange={(e) => handleChange(index, e.target.value)}
-                            style={{ width: '40px' }} // Adjust width as needed
+                            style={{ width: '30px' }} 
                         />
                     </div>
                 ))}

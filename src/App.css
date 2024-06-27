@@ -29,7 +29,7 @@
 }
 
 .styled-table tbody tr:nth-of-type(even) {
-  background-color: #f3f3f3;
+  background-color: #f3f3f38f;
 }
 
 .styled-table tbody tr:last-of-type {
@@ -135,13 +135,12 @@ button {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 80%;
- 
 }
  
 .home-page h1 {
   font-size: 3rem;
   text-shadow: 2px 2px white;
+  margin-top: 5rem;
 }
 
 .stats {
