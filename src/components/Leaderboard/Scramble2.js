@@ -93,7 +93,7 @@ const Scramble2 = ({ scores, teamTotals, users }) => {
 
     return (
         <div className="scramble2">
-            <h1>2-man Scramble</h1>
+            <h3>2-man Scramble</h3>
 
             <table className="styled-table">
                 <thead>

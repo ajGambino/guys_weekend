@@ -95,7 +95,7 @@ const Shamble = ({ scores, teamTotals, users }) => {
 
     return (
         <div className="shamble">
-            <h1>Shamble</h1>
+            <h3>Shamble</h3>
 
             <table className="styled-table">
                 <thead>
