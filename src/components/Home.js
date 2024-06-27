@@ -1,31 +1,30 @@
+// src/components/Home.js
 import React, { useState, useEffect } from 'react';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
-
+import { db } from '../firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 const Home = () => {
-    const [players, setPlayers] = useState([]);
+  const [users, setUsers] = useState([]);
 
-    useEffect(() => {
-        // Fetch players from Firebase Firestore
-        const fetchPlayers = async () => {
-            try {
-                const snapshot = await firebase.firestore().collection('players').get();
-                const playerData = snapshot.docs.map((doc) => doc.data());
-                setPlayers(playerData);
-            } catch (error) {
-                console.error('Error fetching players:', error);
-            }
-        };
+  const fetchPlayers = async () => {
+    try {
+      // Fetch documents from the 'users' collection
+      const querySnapshot = await getDocs(collection(db, 'users'));
+      const playersList = querySnapshot.docs.map(doc => doc.data());
+      setUsers(playersList);
+    } catch (error) {
+      console.error('Error fetching players:', error);
+    }
+  };
 
-        fetchPlayers();
-    }, []);
+  useEffect(() => {
+    fetchPlayers();
+  }, []);
 
-    return (
-        <div className='home-page'>
+  return (
+    <div className='home-page'>
             <h1>GW '24</h1>
-            {players.length === 0 ? (
+            {users.length === 0 ? (
                 <p>No players available.</p>
             ) : (
                 <table className='stats'>
@@ -36,10 +35,10 @@ const Home = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {players.map((player) => (
-                            <tr key={player.name}>
-                                <td className='name-cell'>{player.name}</td>
-                                <td className='net-cell' >${player.net}</td>
+                        {users.map((user) => (
+                            <tr key={user.name}>
+                                <td className='name-cell'>{user.name}</td>
+                                <td className='net-cell' >${user.net}</td>
                             </tr>
                         ))}
                     </tbody>

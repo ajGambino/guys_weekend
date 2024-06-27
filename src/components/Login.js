@@ -1,19 +1,31 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-
+import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from '../firebase'; // Ensure you import your Firestore instance
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const auth = getAuth();
 
     const handleGoogleLogin = async () => {
         try {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            await firebase.auth().signInWithPopup(provider);
+            const provider = new GoogleAuthProvider();
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+
+            // Check if user exists in Firestore
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (!userDoc.exists()) {
+                // Create user object in Firestore
+                await setDoc(doc(db, 'users', user.uid), {
+                    name: user.displayName,
+                    net: 0
+                });
+            }
 
             navigate('/home');
         } catch (error) {
@@ -32,12 +44,20 @@ const Login = () => {
 
     const handleLogin = async (event) => {
         event.preventDefault();
-
         try {
-            // Sign in the user with email and password
-            await firebase.auth().signInWithEmailAndPassword(email, password);
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
 
-            // Redirect to the landing page or any other protected route
+            // Check if user exists in Firestore
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (!userDoc.exists()) {
+                // Create user object in Firestore
+                await setDoc(doc(db, 'users', user.uid), {
+                    name: user.displayName || 'Unknown',
+                    net: 0
+                });
+            }
+
             navigate('/home');
         } catch (error) {
             setError('Failed to log in');
@@ -50,7 +70,8 @@ const Login = () => {
             <h1>Login</h1>
             <button type="button" onClick={handleGoogleLogin}>
                 Login with Google
-            </button> <br></br>
+            </button>
+            <br />
             {error && <p>{error}</p>}
             <form onSubmit={handleLogin}>
                 <div>
@@ -60,13 +81,10 @@ const Login = () => {
                 <div>
                     <label htmlFor="password">Password:</label>
                     <input type="password" id="password" value={password} onChange={handlePasswordChange} />
-                </div><br></br>
+                </div>
+                <br />
                 <button type="submit">Login</button>
             </form>
-
-            {/*  <p>
-                Don't have an account? <Link to="/signup">Sign up now</Link>
-    </p> */}
         </div>
     );
 };

@@ -1,9 +1,7 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-
+import { auth } from '../firebase'; // Correct import of auth
 
 const Navbar = () => {
     const { currentUser } = useContext(AuthContext);
@@ -12,7 +10,7 @@ const Navbar = () => {
     const handleLogout = async () => {
         try {
             // Sign out the user
-            await firebase.auth().signOut();
+            await auth.signOut();
 
             // Redirect to the login page or any other desired page
             navigate('/login');
