@@ -26,17 +26,17 @@ const Navbar = () => {
                     <Link to="/home">Home</Link>
                 </li>
                 <li>
-                    <Link to="/place-bet">Place Bet</Link>
+                    <Link to="/place-bet">Bets</Link>
                 </li>
                 <li>
                     <Link to="/results">Results</Link>
                 </li>
                 <li>
-                    <Link to="/Leaderboard">Leaderboard</Link>
+                    <Link to="/Leaderboard">Live</Link>
                 </li> 
-                <li>
+                {/* <li>
                     <Link to="/signup">Sign up</Link>
-                </li> 
+                </li>  */}
                 {currentUser ? (
                     <li>
                         <button onClick={handleLogout}>Logout</button>
