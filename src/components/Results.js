@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getFirestore, collection, query, orderBy, getDocs, doc, updateDoc } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import {  collection, query, orderBy, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { db, auth } from '../firebase'; // Import your initialized Firebase services
 
 const Results = () => {

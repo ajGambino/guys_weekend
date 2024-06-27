@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import {  doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase'; // Ensure you import your Firestore instance
 
 const Login = () => {

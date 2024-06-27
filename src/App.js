@@ -7,7 +7,7 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import { AuthProvider } from './components/AuthContext';
 import PlaceBet from './components/PlaceBet';
-import Leaderboard from './components/Leaderboard';
+import Leaderboard from './components/Leaderboard/Leaderboard';
 
 const App = () => {
   return (
