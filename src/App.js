@@ -8,6 +8,7 @@ import Signup from './components/Signup';
 import { AuthProvider } from './components/AuthContext';
 import PlaceBet from './components/PlaceBet';
 import Leaderboard from './components/Leaderboard/Leaderboard';
+import './App.css'
 
 const App = () => {
   return (

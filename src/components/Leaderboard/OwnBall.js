@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ref, set, get, update, onValue } from 'firebase/database';
 import { rtdb, auth } from '../../firebase';
 
+
 const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
     const currentUser = auth.currentUser;
     const [localScores, setLocalScores] = useState(Array(9).fill(''));
@@ -62,9 +63,80 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
         onInputChange(localScores);
     };
 
+    const getTeamScores = (teamId) => {
+        const teamMembers = Object.entries(users).filter(([userId, user]) => user.teamId === teamId);
+        const teamScores = Array(9).fill(0);
+        teamMembers.forEach(([userId]) => {
+            const userHoles = scores[userId]?.holes || {};
+            Object.keys(userHoles).forEach(hole => {
+                teamScores[hole - 1] += userHoles[hole];
+            });
+        });
+        return teamScores;
+    };
+
+    const teamRows = [
+        { teamName: 'AJ/Jer', teamId: 'team1' },
+        { teamName: 'CK/CD', teamId: 'team3' },
+        { teamName: 'BA/NA', teamId: 'team2' },
+        { teamName: 'GM/PM', teamId: 'team4' }
+    ];
+
     return (
         <div>
             <h1>Own Ball</h1>
+            <table className="styled-table">
+                <thead>
+                    <tr>
+                        <th>Hole</th>
+                        {[...Array(9)].map((_, index) => (
+                            <th key={index}>{index + 1}</th>
+                        ))}
+                        <th>Total</th>
+                    </tr>
+                    <tr>
+                        <th>Yds</th>
+                        <th>392</th>
+                        <th>292</th>
+                        <th>481</th>
+                        <th>169</th>
+                        <th>410</th>
+                        <th>437</th>
+                        <th>318</th>
+                        <th>356</th>
+                        <th>157</th>
+                        <th>3012</th>
+                    </tr>
+                    <tr>
+                        <th>Par</th>
+                        <th>4</th>
+                        <th>4</th>
+                        <th>5</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th>4</th>
+                        <th>4</th>
+                        <th>4</th>
+                        <th>3</th>
+                        <th>35</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {teamRows.map(({ teamName, teamId }) => {
+                        const teamScores = getTeamScores(teamId);
+                        const teamTotal = teamScores.reduce((acc, score) => acc + score, 0);
+                        return (
+                            <tr key={teamId}>
+                                <td>{teamName}</td>
+                                {teamScores.map((score, index) => (
+                                    <td key={index}>{score}</td>
+                                ))}
+                                <td>{teamTotal}</td>
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </table>
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                 {[...Array(9)].map((_, index) => (
                     <div key={index}>
@@ -84,15 +156,6 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
                 {Object.entries(scores).map(([userId, user]) => (
                     <li key={userId}>
                         {users[userId]?.name || userId}: {user.total}
-                    </li>
-                ))}
-            </ul>
-
-            <h2>Own Ball Team Totals</h2>
-            <ul>
-                {Object.entries(teamTotals).map(([teamId, total]) => (
-                    <li key={teamId}>
-                        {teamId}: {total}
                     </li>
                 ))}
             </ul>

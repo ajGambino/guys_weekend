@@ -22,7 +22,7 @@ const Navbar = () => {
     return (
         <nav className='navbar'>
             <ul>
-                {/* <li>
+                 <li>
                     <Link to="/home">Home</Link>
                 </li>
                 <li>
@@ -33,7 +33,7 @@ const Navbar = () => {
                 </li>
                 <li>
                     <Link to="/Leaderboard">Leaderboard</Link>
-                </li> */}
+                </li> 
                 <li>
                     <Link to="/signup">Sign up</Link>
                 </li> 
