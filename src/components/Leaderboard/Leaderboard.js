@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { ref, onValue } from 'firebase/database';
-import { rtdb } from '../../firebase';
+import { rtdb, db } from '../../firebase';
 import AlternateShot from './AlternateShot';
 import OwnBall from './OwnBall';
 import Scramble2 from './Scramble2';
 import Scramble4 from './Scramble4';
 import Shamble from './Shamble';
+import { collection, getDocs } from 'firebase/firestore';
 
 const Leaderboard = () => {
     const [currentFormat, setCurrentFormat] = useState('ownBall');
@@ -13,6 +14,7 @@ const Leaderboard = () => {
     const [scores, setScores] = useState({});
     const [teams, setTeams] = useState({});
     const [inputScores, setInputScores] = useState({ ownBall: [], alternateShot: [], scramble2: [], scramble4: [], shamble: [] });
+    const [teamData, setTeamData] = useState([]);
 
     useEffect(() => {
         const usersRef = ref(rtdb, 'users');
@@ -32,6 +34,14 @@ const Leaderboard = () => {
             const data = snapshot.val();
             setTeams(data || {});
         });
+
+        const fetchTeamsData = async () => {
+            const querySnapshot = await getDocs(collection(db, "teams"));
+            const teamsData = querySnapshot.docs.map(doc => doc.data());
+            setTeamData(teamsData);
+        };
+
+        fetchTeamsData();
     }, []);
 
     const calculateTeamTotals = (format) => {
@@ -85,16 +95,40 @@ const Leaderboard = () => {
     return (
         <div>
             <h1>GW Leaderboard</h1>
+            <table className="styled-table">
+                <thead>
+                    <tr>
+                        <th>Team Name</th>
+                        <th>4-man</th>
+                        <th>Alternate</th>
+                        <th>Own</th>
+                        <th>Shamble</th>
+                        <th>2-man</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {teamData.map((team, index) => (
+                        <tr key={index}>
+                            <td>{team.TeamName}</td>
+                            <td>{team['4man']}</td>
+                            <td>{team.alternate}</td>
+                            <td>{team.own}</td>
+                            <td>{team.shamble}</td>
+                            <td>{team['2man']}</td>
+                            <td>{team.Pts}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
             <nav>
-            <h6>Fri. Elkdale:</h6>
-            <button onClick={() => setCurrentFormat('scramble4')}>4man Scramble</button>
-            <button onClick={() => setCurrentFormat('alternateShot')}>Alternate Shot</button>
-            <button onClick={() => setCurrentFormat('ownBall')}>Own Ball</button>
-            <h6>Sat. Holiday Valley:</h6>
-            <button onClick={() => setCurrentFormat('shamble')}>Shamble</button>   
-            <button onClick={() => setCurrentFormat('scramble2')}>2man Scramble</button>
-                
-               
+                <h6>Fri. Elkdale:</h6>
+                <button onClick={() => setCurrentFormat('scramble4')}>4-man Scramble</button>
+                <button onClick={() => setCurrentFormat('alternateShot')}>Alternate Shot</button>
+                <button onClick={() => setCurrentFormat('ownBall')}>Own Ball</button>
+                <h6>Sat. Holiday Valley:</h6>
+                <button onClick={() => setCurrentFormat('shamble')}>Shamble</button>
+                <button onClick={() => setCurrentFormat('scramble2')}>2-man Scramble</button>
             </nav>
             {renderCurrentFormat()}
         </div>
