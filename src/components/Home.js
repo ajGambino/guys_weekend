@@ -1,4 +1,3 @@
-// src/components/Home.js
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
@@ -8,7 +7,6 @@ const Home = () => {
 
   const fetchPlayers = async () => {
     try {
-      // Fetch documents from the 'users' collection
       const querySnapshot = await getDocs(collection(db, 'users'));
       const playersList = querySnapshot.docs.map(doc => doc.data());
       setUsers(playersList);
@@ -23,29 +21,29 @@ const Home = () => {
 
   return (
     <div className='home-page'>
-            <h1>GW '24</h1>
-            {users.length === 0 ? (
-                <p>No players available.</p>
-            ) : (
-                <table className='stats'>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Net</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {users.map((user) => (
-                            <tr key={user.name}>
-                                <td className='name-cell'>{user.name}</td>
-                                <td className='net-cell' >${user.net}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            )}</div>
-
-    );
+      <h1>GW '24</h1>
+      {users.length === 0 ? (
+        <p>No players available.</p>
+      ) : (
+        <div className='stats'>
+          <div className='table-container'>
+            <div className='name-column'>
+              <h2>Name</h2>
+              {users.map((user) => (
+                <p key={user.name}>{user.name}</p>
+              ))}
+            </div>
+            <div className='net-column'>
+              <h2>Net</h2>
+              {users.map((user) => (
+                <p key={user.name}>${user.net}</p>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default Home;

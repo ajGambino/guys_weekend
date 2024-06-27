@@ -169,6 +169,7 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
                     ))}
                 </tbody>
             </table>
+            <h3>Scorecard</h3>
 <div className='own-container'>
     <div>
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>

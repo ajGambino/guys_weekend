@@ -152,6 +152,7 @@ const AlternateShot = ({ scores, teamTotals, users }) => {
                     ))}
                 </tbody>
             </table>
+            <h3>Scorecard</h3>
             <div className="scorecard-row">
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                 {[...Array(9)].map((_, index) => (
