@@ -264,7 +264,6 @@ const PlaceBet = () => {
                                 </select>
                                 <br/>
                                 {betDescription === 'other' && (
-                                    
                                     <input id='other-input'
                                         type="text"
                                         value={otherDescription}

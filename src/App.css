@@ -256,6 +256,8 @@ button {
 
 .results-container {
   overflow: auto;
+  height: 90vh;
+  
 }
 
 .result-item {
