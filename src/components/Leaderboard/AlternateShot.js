@@ -93,7 +93,7 @@ const AlternateShot = ({ scores, teamTotals, users }) => {
 
     return (
         <div className="alt">
-            <h1>Alternate Shot</h1>
+            <h3>Alternate Shot</h3>
             
             <table className="styled-table">
                 <thead>

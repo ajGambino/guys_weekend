@@ -55,11 +55,11 @@ const Shamble = ({ scores, teamTotals, users }) => {
 
     const getTeamScores = (teamId) => {
         const teamMembers = Object.entries(users).filter(([userId, user]) => user.teamId === teamId);
-        const teamScores = Array(9).fill(0);
-        teamMembers.forEach(([userId]) => {
+        const teamScores = Array(9).fill(0).map(() => [0, 0]); // Array of [player1, player2] scores
+        teamMembers.forEach(([userId], memberIndex) => {
             const userHoles = scores[userId]?.holes || {};
             Object.keys(userHoles).forEach(hole => {
-                teamScores[hole - 1] += userHoles[hole];
+                teamScores[hole - 1][memberIndex] = userHoles[hole];
             });
         });
         return teamScores;
@@ -69,9 +69,9 @@ const Shamble = ({ scores, teamTotals, users }) => {
         const par = [4, 4, 4, 4, 3, 5, 4, 4, 3];
         let relativeToPar = 0;
         let holesCompleted = 0;
-        teamScores.forEach((score, index) => {
-            if (score !== 0) {
-                relativeToPar += score - par[index];
+        teamScores.forEach((scores, index) => {
+            if (scores[0] !== 0 && scores[1] !== 0) { // Ensure both players have scores
+                relativeToPar += (scores[0] + scores[1]) - 2 * par[index];
                 holesCompleted += 1;
             }
         });
@@ -153,28 +153,41 @@ const Shamble = ({ scores, teamTotals, users }) => {
                     {sortedTeamRows.map(({ teamName, teamId, teamScores }) => (
                         <tr key={teamId}>
                             <td>{teamName}</td>
-                            {teamScores.map((score, index) => (
-                                <td key={index}>{score}</td>
+                            {teamScores.map((scores, index) => (
+                                <td key={index}>{scores[0] + scores[1]}</td>
                             ))}
                         </tr>
                     ))}
                 </tbody>
             </table>
-<div className="scorecard-row">
-            <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
-                {[...Array(9)].map((_, index) => (
-                    <div className="border" key={index}>
-                        <label>Hole {index + 1}:</label>
-                        <input
-                            type="number"
-                            value={localScores[index]}
-                            onChange={(e) => handleChange(index, e.target.value)}
-                        />
-                    </div>
-                ))}
-                <button type="submit">Submit Scores</button>
-            </form></div>
-
+            <div className='own-container'>
+                <div>
+                    <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+                        {[...Array(9)].map((_, index) => (
+                            <div className='border' key={index}>
+                                <label>Hole #{index + 1}:</label>
+                                <input
+                                    type="number"
+                                    value={localScores[index]}
+                                    onChange={(e) => handleChange(index, e.target.value)}
+                                    style={{ width: '40px' }} // Adjust width as needed
+                                />
+                            </div>
+                        ))}
+                        <button type="submit">Submit Scores</button>
+                    </form>
+                </div>
+                <div>
+                    <h4>Shamble Scores</h4>
+                    <ul>
+                        {Object.entries(scores).map(([userId, user]) => (
+                            <li key={userId}>
+                                {users[userId]?.name || userId}: {user.total}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
         </div>
     );
 };

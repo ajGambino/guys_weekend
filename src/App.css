@@ -91,10 +91,11 @@ ul {
 
 
 /* own ball styles */
-.own-ball, .leaderboard, .scramble4, .scramble2, .alt, .shamble{
+.own-ball, .leaderboard, .scramble4, .scramble2, .alt, .shamble {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 }
 
 .own-container {

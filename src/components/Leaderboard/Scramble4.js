@@ -170,7 +170,8 @@ const Scramble4 = ({ scores, teamTotals, users }) => {
                             onChange={(e) => handleChange(index, e.target.value)}
                         />
                     </div>
-                ))}
+                ))} 
+                
                 <button type="submit">Submit Scores</button>
             </form>
         </div></div>
