@@ -95,16 +95,16 @@ const Leaderboard = () => {
     const sortedTeamData = [...teamData].sort((a, b) => b.Pts - a.Pts);
 
     return (
-        <div>
+        <div className='leaderboard'>
             <h1>Leaderboard</h1>
             <table className="styled-table">
                 <thead>
                     <tr>
                         <th>Team</th>
                         <th>4-man</th>
-                        <th>Alternate</th>
+                        <th>Alt</th>
                         <th>Own</th>
-                        <th>Shamble</th>
+                        <th>Sham</th>
                         <th>2-man</th>
                         <th>Total</th>
                     </tr>
@@ -123,15 +123,19 @@ const Leaderboard = () => {
                     ))}
                 </tbody>
             </table>
+            <div className='nav-container'>
             <nav>
                 <h6>Fri. Elkdale:</h6>
                 <button onClick={() => setCurrentFormat('scramble4')}>4-man Scramble</button>
                 <button onClick={() => setCurrentFormat('alternateShot')}>Alternate Shot</button>
                 <button onClick={() => setCurrentFormat('ownBall')}>Own Ball</button>
+                </nav>
+            <nav>    
                 <h6>Sat. Holiday Valley:</h6>
                 <button onClick={() => setCurrentFormat('shamble')}>Shamble</button>
                 <button onClick={() => setCurrentFormat('scramble2')}>2-man Scramble</button>
             </nav>
+            </div>
             {renderCurrentFormat()}
         </div>
     );

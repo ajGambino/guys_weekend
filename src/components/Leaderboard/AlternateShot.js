@@ -92,7 +92,7 @@ const AlternateShot = ({ scores, teamTotals, users }) => {
     }).sort((a, b) => a.relativeToPar - b.relativeToPar);
 
     return (
-        <div>
+        <div className="alt">
             <h1>Alternate Shot</h1>
             
             <table className="styled-table">
@@ -152,10 +152,10 @@ const AlternateShot = ({ scores, teamTotals, users }) => {
                     ))}
                 </tbody>
             </table>
-            
+            <div className="scorecard-row">
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                 {[...Array(9)].map((_, index) => (
-                    <div key={index}>
+                    <div className="border" key={index}>
                         <label>Hole {10 + index}:</label>
                         <input
                             type="number"
@@ -166,7 +166,7 @@ const AlternateShot = ({ scores, teamTotals, users }) => {
                     </div>
                 ))}
                 <button type="submit">Submit Scores</button>
-            </form>
+            </form></div>
         </div>
     );
 };

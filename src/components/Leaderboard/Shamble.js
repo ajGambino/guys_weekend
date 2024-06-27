@@ -94,7 +94,7 @@ const Shamble = ({ scores, teamTotals, users }) => {
         .sort((a, b) => a.relativeToPar - b.relativeToPar);
 
     return (
-        <div>
+        <div className="shamble">
             <h1>Shamble</h1>
 
             <table className="styled-table">
@@ -160,10 +160,10 @@ const Shamble = ({ scores, teamTotals, users }) => {
                     ))}
                 </tbody>
             </table>
-
+<div className="scorecard-row">
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                 {[...Array(9)].map((_, index) => (
-                    <div key={index}>
+                    <div className="border" key={index}>
                         <label>Hole {index + 1}:</label>
                         <input
                             type="number"
@@ -173,7 +173,7 @@ const Shamble = ({ scores, teamTotals, users }) => {
                     </div>
                 ))}
                 <button type="submit">Submit Scores</button>
-            </form>
+            </form></div>
 
         </div>
     );

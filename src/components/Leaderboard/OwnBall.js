@@ -103,8 +103,8 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
         .sort((a, b) => a.relativeToPar - b.relativeToPar);
 
     return (
-        <div>
-            <h1>Own Ball</h1>
+        <div className='own-ball'>
+            <h3>Own Ball</h3>
             
             <table className="styled-table">
                 <thead>
@@ -169,11 +169,12 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
                     ))}
                 </tbody>
             </table>
-
+<div className='own-container'>
+    <div>
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                 {[...Array(9)].map((_, index) => (
-                    <div key={index}>
-                        <label>Hole {index + 1}:</label>
+                    <div className='border' key={index}>
+                        <label>Hole #{index + 1}:</label>
                         <input
                             type="number"
                             value={localScores[index]}
@@ -183,16 +184,16 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
                     </div>
                 ))}
                 <button type="submit">Submit Scores</button>
-            </form>
-
-            <h2>Own Ball Scores</h2>
+            </form></div>
+ <div>
+            <h4>Own Ball Scores</h4>
             <ul>
                 {Object.entries(scores).map(([userId, user]) => (
                     <li key={userId}>
                         {users[userId]?.name || userId}: {user.total}
                     </li>
                 ))}
-            </ul>
+            </ul></div></div>
         </div>
     );
 };

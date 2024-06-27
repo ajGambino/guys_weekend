@@ -91,7 +91,7 @@ const Scramble4 = ({ scores, teamTotals, users }) => {
         .sort((a, b) => a.relativeToPar - b.relativeToPar);
 
     return (
-        <div>
+        <div className='scramble4'>
             <h1>4-man Scramble</h1>
             
             <table className="styled-table">
@@ -157,11 +157,13 @@ const Scramble4 = ({ scores, teamTotals, users }) => {
                     ))}
                 </tbody>
             </table>
+            
+<div className='scorecard-row'>
 
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                 {[...Array(9)].map((_, index) => (
-                    <div key={index}>
-                        <label>Hole {index + 1}:</label>
+                    <div className="border" key={index}>
+                        <label>Hole #{index + 1}:</label>
                         <input
                             type="number"
                             value={localScores[index]}
@@ -171,7 +173,7 @@ const Scramble4 = ({ scores, teamTotals, users }) => {
                 ))}
                 <button type="submit">Submit Scores</button>
             </form>
-        </div>
+        </div></div>
     );
 };
 
