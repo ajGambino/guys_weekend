@@ -208,15 +208,15 @@ const PlaceBet = () => {
                 {currentUser ? (
                     <>
                         <div className='bet-form-container'>
-                            <div className='bet-form'>
-                                <label htmlFor="amount">Bet Amount:</label>
+                           <div className='bet-flexbox'>
+                                <label htmlFor="amount">Bet Amount: </label>
                                 <input
                                     type="number"
                                     id="amount"
                                     value={betAmount}
                                     onChange={handleBetAmountChange}
-                                />
-                            </div>
+                                /></div>
+                             <div className='bet-form'>
                             <PlayerForm
                                 label="Winner"
                                 id="winner"
@@ -249,6 +249,7 @@ const PlaceBet = () => {
                                 onChange={handleBetLoserChange}
                                 playerNames={playerNames}
                             />
+                            
                             <div>
                                 <label htmlFor="description">Description:</label>
                                 <select
@@ -261,8 +262,10 @@ const PlaceBet = () => {
                                     <option value="bags">Bags</option>
                                     <option value="other">Other</option>
                                 </select>
+                                <br/>
                                 {betDescription === 'other' && (
-                                    <input
+                                    
+                                    <input id='other-input'
                                         type="text"
                                         value={otherDescription}
                                         onChange={(event) => setOtherDescription(event.target.value)}
@@ -270,11 +273,12 @@ const PlaceBet = () => {
                                     />
                                 )}
                             </div>
-
+                            
                             <button onClick={handlePlaceBet}>Place Bet</button>
                             <button onClick={handleTeamSelectionClick}>
                                 {showAdditionalFields ? 'Hide Teams' : 'Teams?'}
                             </button>
+                            </div>
                             {/* Render bets */}
 
                             <div className='recent-bets'>
