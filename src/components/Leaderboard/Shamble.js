@@ -55,14 +55,27 @@ const Shamble = ({ scores, teamTotals, users }) => {
 
     const getTeamScores = (teamId) => {
         const teamMembers = Object.entries(users).filter(([userId, user]) => user.teamId === teamId);
-        const teamScores = Array(9).fill(0);
-        teamMembers.forEach(([userId]) => {
+        const teamScores = Array(9).fill(0).map(() => [0, 0]); // Array of [player1, player2] scores
+        teamMembers.forEach(([userId], memberIndex) => {
             const userHoles = scores[userId]?.holes || {};
             Object.keys(userHoles).forEach(hole => {
-                teamScores[hole - 1] += userHoles[hole];
+                teamScores[hole - 1][memberIndex] = userHoles[hole];
             });
         });
         return teamScores;
+    };
+
+    const calculateRelativeToPar = (teamScores) => {
+        const par = [4, 4, 4, 4, 3, 5, 4, 4, 3];
+        let relativeToPar = 0;
+        let holesCompleted = 0;
+        teamScores.forEach((scores, index) => {
+            if (scores[0] !== 0 && scores[1] !== 0) { // Ensure both players have scores
+                relativeToPar += (scores[0] + scores[1]) - 2 * par[index];
+                holesCompleted += 1;
+            }
+        });
+        return { relativeToPar, holesCompleted };
     };
 
     const teamRows = [
@@ -71,6 +84,14 @@ const Shamble = ({ scores, teamTotals, users }) => {
         { teamName: 'BANA', teamId: 'team2' },
         { teamName: 'GMPM', teamId: 'team4' }
     ];
+
+    const sortedTeamRows = teamRows
+        .map(({ teamName, teamId }) => {
+            const teamScores = getTeamScores(teamId);
+            const { relativeToPar, holesCompleted } = calculateRelativeToPar(teamScores);
+            return { teamName, teamId, teamScores, relativeToPar, holesCompleted };
+        })
+        .sort((a, b) => a.relativeToPar - b.relativeToPar);
 
     return (
         <div>
@@ -83,6 +104,7 @@ const Shamble = ({ scores, teamTotals, users }) => {
                             <th key={index}>{index + 1}</th>
                         ))}
                         <th>Total</th>
+                        <th>Thru</th>
                     </tr>
                     <tr>
                         <th>Yds</th>
@@ -112,19 +134,16 @@ const Shamble = ({ scores, teamTotals, users }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {teamRows.map(({ teamName, teamId }) => {
-                        const teamScores = getTeamScores(teamId);
-                        const teamTotal = teamScores.reduce((acc, score) => acc + score, 0);
-                        return (
-                            <tr key={teamId}>
-                                <td>{teamName}</td>
-                                {teamScores.map((score, index) => (
-                                    <td key={index}>{score}</td>
-                                ))}
-                                <td>{teamTotal}</td>
-                            </tr>
-                        );
-                    })}
+                    {sortedTeamRows.map(({ teamName, teamId, teamScores, relativeToPar, holesCompleted }) => (
+                        <tr key={teamId}>
+                            <td>{teamName}</td>
+                            {teamScores.map((scores, index) => (
+                                <td key={index}>{scores[0] + scores[1]}</td>
+                            ))}
+                            <td>{relativeToPar === 0 ? 'E' : relativeToPar > 0 ? `+${relativeToPar}` : relativeToPar}</td>
+                            <td>{holesCompleted}</td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
@@ -149,8 +168,6 @@ const Shamble = ({ scores, teamTotals, users }) => {
                     </li>
                 ))}
             </ul>
-
-       
         </div>
     );
 };
