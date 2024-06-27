@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ref, onValue, get, update } from 'firebase/database';
+import { ref, onValue } from 'firebase/database';
 import { rtdb } from '../../firebase';
 import AlternateShot from './AlternateShot';
 import OwnBall from './OwnBall';
@@ -12,6 +12,7 @@ const Leaderboard = () => {
     const [users, setUsers] = useState({});
     const [scores, setScores] = useState({});
     const [teams, setTeams] = useState({});
+    const [inputScores, setInputScores] = useState({ ownBall: [], alternateShot: [], scramble2: [], scramble4: [], shamble: [] });
 
     useEffect(() => {
         const usersRef = ref(rtdb, 'users');
@@ -33,10 +34,10 @@ const Leaderboard = () => {
         });
     }, []);
 
-    const calculateTeamTotals = () => {
+    const calculateTeamTotals = (format) => {
         const teamTotals = {};
-        for (const userId in scores) {
-            const userScore = scores[userId];
+        for (const userId in (scores[format] || {})) {
+            const userScore = scores[format][userId];
             const user = users[userId];
             if (user) {
                 const teamId = user.teamId;
@@ -49,27 +50,36 @@ const Leaderboard = () => {
         return teamTotals;
     };
 
-    const teamTotals = calculateTeamTotals();
-
-    const renderCurrentFormat = () => {
-        switch (currentFormat) {
-            case 'ownBall':
-                return <OwnBall scores={scores} teamTotals={teamTotals} users={users} />;
-            case 'alternateShot':
-                return <AlternateShot scores={scores} teamTotals={teamTotals} users={users} />;
-            case 'scramble2':
-                return <Scramble2 scores={scores} teamTotals={teamTotals} users={users} />;
-            case 'scramble4':
-                return <Scramble4 scores={scores} teamTotals={teamTotals} users={users} />;
-            case 'shamble':
-                return <Shamble scores={scores} teamTotals={teamTotals} users={users} />;
-            default:
-                return <OwnBall scores={scores} teamTotals={teamTotals} users={users} />;
-        }
+    const handleInputChange = (format, userScores) => {
+        setInputScores((prevInputScores) => ({
+            ...prevInputScores,
+            [format]: userScores,
+        }));
     };
 
-    const getUserName = (userId) => {
-        return users[userId]?.name || userId;
+    const renderCurrentFormat = () => {
+        const formatProps = {
+            scores: scores[currentFormat] || {},
+            teamTotals: calculateTeamTotals(currentFormat),
+            users: users,
+            userScores: inputScores[currentFormat],
+            onInputChange: (userScores) => handleInputChange(currentFormat, userScores),
+        };
+
+        switch (currentFormat) {
+            case 'ownBall':
+                return <OwnBall {...formatProps} />;
+            case 'alternateShot':
+                return <AlternateShot {...formatProps} />;
+            case 'scramble2':
+                return <Scramble2 {...formatProps} />;
+            case 'scramble4':
+                return <Scramble4 {...formatProps} />;
+            case 'shamble':
+                return <Shamble {...formatProps} />;
+            default:
+                return <OwnBall {...formatProps} />;
+        }
     };
 
     return (
@@ -83,24 +93,6 @@ const Leaderboard = () => {
                 <button onClick={() => setCurrentFormat('shamble')}>Shamble</button>
             </nav>
             {renderCurrentFormat()}
-
-            <h2>Scores</h2>
-            <ul>
-                {Object.entries(scores).map(([userId, scoreData]) => (
-                    <li key={userId}>
-                        {getUserName(userId)}: {scoreData.total}
-                    </li>
-                ))}
-            </ul>
-
-            <h2>Team Totals</h2>
-            <ul>
-                {Object.entries(teamTotals).map(([teamId, total]) => (
-                    <li key={teamId}>
-                        {teams[teamId]?.name || teamId}: {total}
-                    </li>
-                ))}
-            </ul>
         </div>
     );
 };

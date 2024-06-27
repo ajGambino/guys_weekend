@@ -1,42 +1,55 @@
-import React, { useState } from 'react';
-import { ref, set, update, get, onValue } from 'firebase/database';
+import React, { useState, useEffect } from 'react';
+import { ref, set, get, update, onValue } from 'firebase/database';
 import { rtdb, auth } from '../../firebase';
 
 const Shamble = ({ scores, teamTotals, users }) => {
-    const [userScores, setUserScores] = useState(Array(9).fill(''));
-
+    const [localScores, setLocalScores] = useState(Array(9).fill(''));
     const currentUser = auth.currentUser;
+    const userId = currentUser.uid;
+
+    useEffect(() => {
+        const userScoresRef = ref(rtdb, `scores/shamble/${userId}/holes`);
+        onValue(userScoresRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                const fetchedScores = Array(9).fill('');
+                Object.keys(data).forEach(hole => {
+                    fetchedScores[hole - 1] = data[hole];
+                });
+                setLocalScores(fetchedScores);
+            }
+        });
+    }, [userId]);
 
     const handleChange = (holeIndex, value) => {
-        const newScores = [...userScores];
+        const newScores = [...localScores];
         newScores[holeIndex] = value;
-        setUserScores(newScores);
+        setLocalScores(newScores);
     };
 
     const handleSubmit = async () => {
-        const userId = currentUser.uid;
-        const userScoresRef = ref(rtdb, `scores/${userId}/holes`);
-        const totalScore = userScores.reduce((acc, score) => acc + Number(score), 0);
+        const userScoresRef = ref(rtdb, `scores/shamble/${userId}/holes`);
+        const totalScore = localScores.reduce((acc, score) => acc + Number(score), 0);
 
-        await set(userScoresRef, userScores.reduce((acc, score, index) => {
+        await set(userScoresRef, localScores.reduce((acc, score, index) => {
             acc[index + 1] = Number(score);
             return acc;
         }, {}));
 
-        await set(ref(rtdb, `scores/${userId}/total`), totalScore);
+        await set(ref(rtdb, `scores/shamble/${userId}/total`), totalScore);
 
         // Update the team total
         const userRef = ref(rtdb, `users/${userId}`);
         onValue(userRef, async (snapshot) => {
             const user = snapshot.val();
             const teamId = user.teamId;
-            const teamScoresRef = ref(rtdb, `teams/${teamId}/total`);
+            const teamScoresRef = ref(rtdb, `teams/${teamId}/shambleTotal`);
 
             const teamSnapshot = await get(teamScoresRef);
             const teamTotal = teamSnapshot.val() || 0;
             const newTeamTotal = teamTotal + totalScore;
 
-            await update(teamScoresRef, { total: newTeamTotal });
+            await update(teamScoresRef, { shambleTotal: newTeamTotal });
         }, { onlyOnce: true });
     };
 
@@ -49,7 +62,7 @@ const Shamble = ({ scores, teamTotals, users }) => {
                         <label>Hole {index + 1}:</label>
                         <input
                             type="number"
-                            value={userScores[index]}
+                            value={localScores[index]}
                             onChange={(e) => handleChange(index, e.target.value)}
                         />
                     </div>
@@ -66,7 +79,7 @@ const Shamble = ({ scores, teamTotals, users }) => {
                 ))}
             </ul>
 
-            <h2>Shamble Totals</h2>
+            <h2>Shamble Team Totals</h2>
             <ul>
                 {Object.entries(teamTotals).map(([teamId, total]) => (
                     <li key={teamId}>
