@@ -86,11 +86,15 @@ const Leaderboard = () => {
         <div>
             <h1>GW Leaderboard</h1>
             <nav>
-                <button onClick={() => setCurrentFormat('ownBall')}>Own Ball</button>
-                <button onClick={() => setCurrentFormat('alternateShot')}>Alternate Shot</button>
-                <button onClick={() => setCurrentFormat('scramble2')}>Scramble 2</button>
-                <button onClick={() => setCurrentFormat('scramble4')}>Scramble 4</button>
-                <button onClick={() => setCurrentFormat('shamble')}>Shamble</button>
+            <h6>Fri. Elkdale:</h6>
+            <button onClick={() => setCurrentFormat('scramble4')}>4man Scramble</button>
+            <button onClick={() => setCurrentFormat('alternateShot')}>Alternate Shot</button>
+            <button onClick={() => setCurrentFormat('ownBall')}>Own Ball</button>
+            <h6>Sat. Holiday Valley:</h6>
+            <button onClick={() => setCurrentFormat('shamble')}>Shamble</button>   
+            <button onClick={() => setCurrentFormat('scramble2')}>2man Scramble</button>
+                
+               
             </nav>
             {renderCurrentFormat()}
         </div>

@@ -66,10 +66,10 @@ const Shamble = ({ scores, teamTotals, users }) => {
     };
 
     const teamRows = [
-        { teamName: 'AJ/Bosko', teamId: 'team1' },
-        { teamName: 'Craig/Det', teamId: 'team3' },
-        { teamName: 'Brandon/Aunkst', teamId: 'team2' },
-        { teamName: 'Greg/Turtle', teamId: 'team4' }
+        { teamName: 'AJJB', teamId: 'team1' },
+        { teamName: 'CKCD', teamId: 'team3' },
+        { teamName: 'BANA', teamId: 'team2' },
+        { teamName: 'GMPM', teamId: 'team4' }
     ];
 
     return (
