@@ -76,10 +76,10 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
     };
 
     const teamRows = [
-        { teamName: 'AJ.JB', teamId: 'team1' },
-        { teamName: 'CK.CD', teamId: 'team3' },
-        { teamName: 'BA.NA', teamId: 'team2' },
-        { teamName: 'GM.PM', teamId: 'team4' }
+        { teamName: 'AJJB', teamId: 'team1' },
+        { teamName: 'CKCD', teamId: 'team3' },
+        { teamName: 'BANA', teamId: 'team2' },
+        { teamName: 'GMPM', teamId: 'team4' }
     ];
 
     return (
@@ -88,7 +88,7 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
             <table className="styled-table">
                 <thead>
                     <tr>
-                        <th>Hole</th>
+                        <th>#</th>
                         {[...Array(9)].map((_, index) => (
                             <th key={index}>{index + 1}</th>
                         ))}

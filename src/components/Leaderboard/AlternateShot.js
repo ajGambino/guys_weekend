@@ -49,22 +49,24 @@ const AlternateShot = ({ scores, teamTotals, users }) => {
     };
 
     const getTeamScores = (teamId) => {
-        const teamMembers = Object.entries(users).filter(([userId, user]) => user.teamId === teamId);
-        const teamScores = Array(9).fill(0);
-        teamMembers.forEach(([userId]) => {
-            const userHoles = scores[userId]?.holes || {};
-            Object.keys(userHoles).forEach(hole => {
-                teamScores[hole - 1] += userHoles[hole];
-            });
+        const teamScoresRef = ref(rtdb, `scores/alternateShot/${teamId}/holes`);
+        let teamScores = Array(9).fill(0);
+        onValue(teamScoresRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                Object.keys(data).forEach(hole => {
+                    teamScores[hole - 1] = data[hole];
+                });
+            }
         });
         return teamScores;
     };
 
     const teamRows = [
-        { teamName: 'AJ.JB', teamId: 'team1' },
-        { teamName: 'CK.CD', teamId: 'team3' },
-        { teamName: 'BA.NA', teamId: 'team2' },
-        { teamName: 'GM.PM', teamId: 'team4' }
+        { teamName: 'AJJB', teamId: 'team1' },
+        { teamName: 'CKCD', teamId: 'team3' },
+        { teamName: 'BANA', teamId: 'team2' },
+        { teamName: 'GMPM', teamId: 'team4' }
     ];
 
     return (
@@ -73,14 +75,14 @@ const AlternateShot = ({ scores, teamTotals, users }) => {
             <table className="styled-table">
                 <thead>
                     <tr>
-                        <th>Hole</th>
+                        <th>#</th>
                         {[...Array(9)].map((_, index) => (
                             <th key={index}>{10 + index}</th>
                         ))}
                         <th>Total</th>
                     </tr>
                     <tr>
-                        <th>Distance</th>
+                        <th>Yds</th>
                         <th>387</th>
                         <th>374</th>
                         <th>164</th>

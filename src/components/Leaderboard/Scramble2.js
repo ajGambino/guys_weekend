@@ -48,13 +48,86 @@ const Scramble2 = ({ scores, teamTotals, users }) => {
         await update(teamRef, { scramble2Total: totalScore });
     };
 
+    const getTeamScores = (teamId) => {
+        const teamScoresRef = ref(rtdb, `scores/scramble2/${teamId}/holes`);
+        let teamScores = Array(9).fill(0);
+        onValue(teamScoresRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                Object.keys(data).forEach(hole => {
+                    teamScores[hole - 1] = data[hole];
+                });
+            }
+        });
+        return teamScores;
+    };
+
+    const teamRows = [
+        { teamName: 'AJJB', teamId: 'team1' },
+        { teamName: 'CKCD', teamId: 'team3' },
+        { teamName: 'BANA', teamId: 'team2' },
+        { teamName: 'GMPM', teamId: 'team4' }
+    ];
+
     return (
         <div>
             <h1>2-man Scramble</h1>
+            <table className="styled-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        {[...Array(9)].map((_, index) => (
+                            <th key={index}>{10 + index}</th>
+                        ))}
+                        <th>Total</th>
+                    </tr>
+                    <tr>
+                        <th>Yds</th>
+                        <th>150</th>
+                        <th>346</th>
+                        <th>165</th>
+                        <th>395</th>
+                        <th>507</th>
+                        <th>200</th>
+                        <th>419</th>
+                        <th>459</th>
+                        <th>407</th>
+                        <th>3048</th>
+                    </tr>
+                    <tr>
+                        <th>Par</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th>5</th>
+                        <th>3</th>
+                        <th>5</th>
+                        <th>5</th>
+                        <th>4</th>
+                        <th>36</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {teamRows.map(({ teamName, teamId }) => {
+                        const teamScores = getTeamScores(teamId);
+                        const teamTotal = teamScores.reduce((acc, score) => acc + score, 0);
+                        return (
+                            <tr key={teamId}>
+                                <td>{teamName}</td>
+                                {teamScores.map((score, index) => (
+                                    <td key={index}>{score}</td>
+                                ))}
+                                <td>{teamTotal}</td>
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </table>
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                 {[...Array(9)].map((_, index) => (
                     <div key={index}>
-                        <label>Hole {index + 1}:</label>
+                        <label>Hole {10 + index}:</label>
                         <input
                             type="number"
                             value={localScores[index]}
@@ -64,17 +137,6 @@ const Scramble2 = ({ scores, teamTotals, users }) => {
                 ))}
                 <button type="submit">Submit Scores</button>
             </form>
-
-            <h2>2-man Scramble Scores</h2>
-            <ul>
-                {Object.entries(scores).map(([teamId, team]) => (
-                    <li key={teamId}>
-                        {teamId}: {team.total}
-                    </li>
-                ))}
-            </ul>
-
-            
         </div>
     );
 };

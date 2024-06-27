@@ -53,9 +53,80 @@ const Shamble = ({ scores, teamTotals, users }) => {
         }, { onlyOnce: true });
     };
 
+    const getTeamScores = (teamId) => {
+        const teamMembers = Object.entries(users).filter(([userId, user]) => user.teamId === teamId);
+        const teamScores = Array(9).fill(0);
+        teamMembers.forEach(([userId]) => {
+            const userHoles = scores[userId]?.holes || {};
+            Object.keys(userHoles).forEach(hole => {
+                teamScores[hole - 1] += userHoles[hole];
+            });
+        });
+        return teamScores;
+    };
+
+    const teamRows = [
+        { teamName: 'AJ/Bosko', teamId: 'team1' },
+        { teamName: 'Craig/Det', teamId: 'team3' },
+        { teamName: 'Brandon/Aunkst', teamId: 'team2' },
+        { teamName: 'Greg/Turtle', teamId: 'team4' }
+    ];
+
     return (
         <div>
             <h1>Shamble</h1>
+            <table className="styled-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        {[...Array(9)].map((_, index) => (
+                            <th key={index}>{index + 1}</th>
+                        ))}
+                        <th>Total</th>
+                    </tr>
+                    <tr>
+                        <th>Yds</th>
+                        <th>380</th>
+                        <th>342</th>
+                        <th>367</th>
+                        <th>384</th>
+                        <th>189</th>
+                        <th>474</th>
+                        <th>363</th>
+                        <th>378</th>
+                        <th>140</th>
+                        <th>3017</th>
+                    </tr>
+                    <tr>
+                        <th>Par</th>
+                        <th>4</th>
+                        <th>4</th>
+                        <th>4</th>
+                        <th>4</th>
+                        <th>3</th>
+                        <th>5</th>
+                        <th>4</th>
+                        <th>4</th>
+                        <th>3</th>
+                        <th>35</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {teamRows.map(({ teamName, teamId }) => {
+                        const teamScores = getTeamScores(teamId);
+                        const teamTotal = teamScores.reduce((acc, score) => acc + score, 0);
+                        return (
+                            <tr key={teamId}>
+                                <td>{teamName}</td>
+                                {teamScores.map((score, index) => (
+                                    <td key={index}>{score}</td>
+                                ))}
+                                <td>{teamTotal}</td>
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </table>
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                 {[...Array(9)].map((_, index) => (
                     <div key={index}>
@@ -79,14 +150,7 @@ const Shamble = ({ scores, teamTotals, users }) => {
                 ))}
             </ul>
 
-            <h2>Shamble Team Totals</h2>
-            <ul>
-                {Object.entries(teamTotals).map(([teamId, total]) => (
-                    <li key={teamId}>
-                        {teamId}: {total}
-                    </li>
-                ))}
-            </ul>
+       
         </div>
     );
 };
