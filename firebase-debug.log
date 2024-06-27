@@ -1,0 +1,64 @@
+[debug] [2024-06-27T06:30:37.655Z] ----------------------------------------------------------------------
+[debug] [2024-06-27T06:30:37.657Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\kenco\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2024-06-27T06:30:37.657Z] CLI Version:   13.12.0
+[debug] [2024-06-27T06:30:37.657Z] Platform:      win32
+[debug] [2024-06-27T06:30:37.657Z] Node Version:  v18.18.0
+[debug] [2024-06-27T06:30:37.658Z] Time:          Thu Jun 27 2024 02:30:37 GMT-0400 (Eastern Daylight Time)
+[debug] [2024-06-27T06:30:37.658Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-06-27T06:30:37.664Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-06-27T06:30:37.664Z] > authorizing via signed-in user (aj.gambino7@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\kenco\OneDrive\Documents\GitHub\guys_weekend
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2024-06-27T06:31:13.001Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=100
+[debug] [2024-06-27T06:31:13.414Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2024-06-27T06:31:13.414Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[info] i  Using project guys-weekend (guys-weekend) 
+[info] 
+=== Hosting Setup
+[debug] [2024-06-27T06:31:14.768Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/guys-weekend [none]
+[debug] [2024-06-27T06:31:15.143Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/guys-weekend 200
+[debug] [2024-06-27T06:31:15.143Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/guys-weekend {"projectId":"guys-weekend","projectNumber":"674370314512","displayName":"guys-weekend","name":"projects/guys-weekend","resources":{"hostingSite":"guys-weekend","realtimeDatabaseInstance":"guys-weekend-default-rtdb"},"state":"ACTIVE","etag":"1_862dc326-58c9-4082-b7b3-ec098e808ff4"}
+[info] 
+[info] Your public directory is the folder (relative to your project directory) that
+[info] will contain Hosting assets to be uploaded with firebase deploy. If you
+[info] have a build process for your assets, use your build's output directory.
+[info] 
+[debug] [2024-06-27T06:31:25.044Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/releases.json [none]
+[debug] [2024-06-27T06:31:25.267Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/releases.json 200
+[debug] [2024-06-27T06:31:25.267Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/releases.json {"current":{"version":"10.12.2","browserURL":"https://www.gstatic.com/firebasejs/10.12.2/firebase.js","packageURL":"https://www.gstatic.com/firebasejs/10.12.2/firebase.tgz"},"live":{"version":"10.12","browserURL":"https://www.gstatic.com/firebasejs/live/10.12/firebase.js","packageURL":"https://www.gstatic.com/firebasejs/live/10.12/firebase.tgz"},"components":{"analytics":"https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js","app":"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js","app-check":"https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js","auth":"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js","auth/cordova":"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth/cordova.js","auth/web-extension":"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth/web-extension.js","functions":"https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js","firestore":"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js","firestore/lite":"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore/lite.js","installations":"https://www.gstatic.com/firebasejs/10.12.2/firebase-installations.js","storage":"https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js","performance":"https://www.gstatic.com/firebasejs/10.12.2/firebase-performance.js","remote-config":"https://www.gstatic.com/firebasejs/10.12.2/firebase-remote-config.js","messaging":"https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js","messaging/sw":"https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging/sw.js","database":"https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js","vertexai-preview":"https://www.gstatic.com/firebasejs/10.12.2/firebase-vertexai-preview.js","firestore.memory":"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.memory.js"}}
+[info] i  Skipping write of public/index.html 
+[info] 
+[info] i  Detected a .git folder at C:\Users\kenco\OneDrive\Documents\GitHub\guys_weekend 
+[info] i  Authorizing with GitHub to upload your service account to a GitHub repository's secrets store. 
+[info] 
+[info] Visit this URL on this device to log in:
+[info] https://github.com/login/oauth/authorize?client_id=89cf50f02ac6aaed3484&state=52306033&redirect_uri=http%3A%2F%2Flocalhost%3A9005&scope=read%3Auser%20repo%20public_repo
+[info] 
+[info] Waiting for authentication...
+[debug] [2024-06-27T06:32:04.773Z] >>> [apiv2][query] POST https://github.com/login/oauth/access_token [none]
+[debug] [2024-06-27T06:32:04.773Z] >>> [apiv2][body] POST https://github.com/login/oauth/access_token [stream]
+[debug] [2024-06-27T06:32:05.118Z] <<< [apiv2][status] POST https://github.com/login/oauth/access_token 200
+[debug] [2024-06-27T06:32:05.118Z] <<< [apiv2][body] POST https://github.com/login/oauth/access_token {"access_token":"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","token_type":"bearer","scope":"read:user,repo"}
+[debug] [2024-06-27T06:32:05.122Z] >>> [apiv2][query] GET https://api.github.com/user [none]
+[debug] [2024-06-27T06:32:05.490Z] <<< [apiv2][status] GET https://api.github.com/user 200
+[debug] [2024-06-27T06:32:05.490Z] <<< [apiv2][body] GET https://api.github.com/user {"login":"ajGambino","id":66279789,"node_id":"MDQ6VXNlcjY2Mjc5Nzg5","avatar_url":"https://avatars.githubusercontent.com/u/66279789?v=4","gravatar_id":"","url":"https://api.github.com/users/ajGambino","html_url":"https://github.com/ajGambino","followers_url":"https://api.github.com/users/ajGambino/followers","following_url":"https://api.github.com/users/ajGambino/following{/other_user}","gists_url":"https://api.github.com/users/ajGambino/gists{/gist_id}","starred_url":"https://api.github.com/users/ajGambino/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/ajGambino/subscriptions","organizations_url":"https://api.github.com/users/ajGambino/orgs","repos_url":"https://api.github.com/users/ajGambino/repos","events_url":"https://api.github.com/users/ajGambino/events{/privacy}","received_events_url":"https://api.github.com/users/ajGambino/received_events","type":"User","site_admin":false,"name":"AJ Gambino","company":null,"blog":"","location":"West Palm Beach, FL","email":null,"hireable":null,"bio":null,"twitter_username":null,"public_repos":87,"public_gists":0,"followers":3,"following":2,"created_at":"2020-06-01T21:32:13Z","updated_at":"2024-06-14T07:26:16Z","private_gists":0,"total_private_repos":16,"owned_private_repos":16,"disk_usage":14594,"collaborators":0,"two_factor_authentication":true,"plan":{"name":"free","space":976562499,"collaborators":0,"private_repos":10000}}
+[info] 
+[info] +  Success! Logged into GitHub as ajGambino 
+[info] 
