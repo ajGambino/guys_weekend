@@ -92,6 +92,8 @@ const Leaderboard = () => {
         }
     };
 
+    const sortedTeamData = [...teamData].sort((a, b) => b.Pts - a.Pts);
+
     return (
         <div>
             <h1>GW Leaderboard</h1>
@@ -108,7 +110,7 @@ const Leaderboard = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {teamData.map((team, index) => (
+                    {sortedTeamData.map((team, index) => (
                         <tr key={index}>
                             <td>{team.TeamName}</td>
                             <td>{team['4man']}</td>

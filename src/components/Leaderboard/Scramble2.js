@@ -9,6 +9,8 @@ const Scramble2 = ({ scores, teamTotals, users }) => {
     const userId = currentUser.uid;
     const teamId = users[userId]?.teamId;
 
+    const parValues = [3, 4, 3, 4, 5, 3, 5, 5, 4]; // Par values for each hole
+
     useEffect(() => {
         if (teamId) {
             const teamScoresRef = ref(rtdb, `scores/scramble2/${teamId}/holes`);
@@ -62,12 +64,32 @@ const Scramble2 = ({ scores, teamTotals, users }) => {
         return teamScores;
     };
 
+    const calculateRelativeToPar = (teamScores) => {
+        const playedHoles = teamScores.filter(score => score > 0).length;
+        const totalScore = teamScores.reduce((acc, score) => acc + (score > 0 ? score : 0), 0);
+        const parTotal = parValues.slice(0, playedHoles).reduce((acc, par) => acc + par, 0);
+        const relativeToPar = totalScore - parTotal;
+        return { relativeToPar, playedHoles };
+    };
+
     const teamRows = [
         { teamName: 'AJJB', teamId: 'team1' },
         { teamName: 'CKCD', teamId: 'team3' },
         { teamName: 'BANA', teamId: 'team2' },
         { teamName: 'GMPM', teamId: 'team4' }
     ];
+
+    const sortedTeamRows = teamRows.map(({ teamName, teamId }) => {
+        const teamScores = getTeamScores(teamId);
+        const { relativeToPar, playedHoles } = calculateRelativeToPar(teamScores);
+        return {
+            teamName,
+            teamId,
+            teamScores,
+            relativeToPar,
+            playedHoles
+        };
+    }).sort((a, b) => a.relativeToPar - b.relativeToPar);
 
     return (
         <div>
@@ -80,6 +102,7 @@ const Scramble2 = ({ scores, teamTotals, users }) => {
                             <th key={index}>{10 + index}</th>
                         ))}
                         <th>Total</th>
+                        <th>Thru</th>
                     </tr>
                     <tr>
                         <th>Yds</th>
@@ -93,35 +116,28 @@ const Scramble2 = ({ scores, teamTotals, users }) => {
                         <th>459</th>
                         <th>407</th>
                         <th>3048</th>
+                        <th></th>
                     </tr>
                     <tr>
                         <th>Par</th>
-                        <th>3</th>
-                        <th>4</th>
-                        <th>3</th>
-                        <th>4</th>
-                        <th>5</th>
-                        <th>3</th>
-                        <th>5</th>
-                        <th>5</th>
-                        <th>4</th>
+                        {parValues.map((par, index) => (
+                            <th key={index}>{par}</th>
+                        ))}
                         <th>36</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    {teamRows.map(({ teamName, teamId }) => {
-                        const teamScores = getTeamScores(teamId);
-                        const teamTotal = teamScores.reduce((acc, score) => acc + score, 0);
-                        return (
-                            <tr key={teamId}>
-                                <td>{teamName}</td>
-                                {teamScores.map((score, index) => (
-                                    <td key={index}>{score}</td>
-                                ))}
-                                <td>{teamTotal}</td>
-                            </tr>
-                        );
-                    })}
+                    {sortedTeamRows.map(({ teamName, teamId, teamScores, relativeToPar, playedHoles }) => (
+                        <tr key={teamId}>
+                            <td>{teamName}</td>
+                            {teamScores.map((score, index) => (
+                                <td key={index}>{score}</td>
+                            ))}
+                            <td>{relativeToPar === 0 ? 'E' : (relativeToPar > 0 ? `+${relativeToPar}` : relativeToPar)}</td>
+                            <td>{playedHoles}</td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
