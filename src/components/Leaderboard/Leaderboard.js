@@ -96,11 +96,11 @@ const Leaderboard = () => {
 
     return (
         <div>
-            <h1>GW Leaderboard</h1>
+            <h1>Leaderboard</h1>
             <table className="styled-table">
                 <thead>
                     <tr>
-                        <th>Team Name</th>
+                        <th>Team</th>
                         <th>4-man</th>
                         <th>Alternate</th>
                         <th>Own</th>
