@@ -76,10 +76,10 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
     };
 
     const teamRows = [
-        { teamName: 'AJ & Cleve', teamId: 'team1' },
-        { teamName: 'Craig & Det', teamId: 'team3' },
-        { teamName: 'Brandon & Aunkst', teamId: 'team2' },
-        { teamName: 'Greg & Turtle', teamId: 'team4' }
+        { teamName: 'AJ.JB', teamId: 'team1' },
+        { teamName: 'CK.CD', teamId: 'team3' },
+        { teamName: 'BA.NA', teamId: 'team2' },
+        { teamName: 'GM.PM', teamId: 'team4' }
     ];
 
     return (

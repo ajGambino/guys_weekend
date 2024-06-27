@@ -48,13 +48,84 @@ const AlternateShot = ({ scores, teamTotals, users }) => {
         await update(teamRef, { alternateShotTotal: totalScore });
     };
 
+    const getTeamScores = (teamId) => {
+        const teamMembers = Object.entries(users).filter(([userId, user]) => user.teamId === teamId);
+        const teamScores = Array(9).fill(0);
+        teamMembers.forEach(([userId]) => {
+            const userHoles = scores[userId]?.holes || {};
+            Object.keys(userHoles).forEach(hole => {
+                teamScores[hole - 1] += userHoles[hole];
+            });
+        });
+        return teamScores;
+    };
+
+    const teamRows = [
+        { teamName: 'AJ.JB', teamId: 'team1' },
+        { teamName: 'CK.CD', teamId: 'team3' },
+        { teamName: 'BA.NA', teamId: 'team2' },
+        { teamName: 'GM.PM', teamId: 'team4' }
+    ];
+
     return (
         <div>
             <h1>Alternate Shot</h1>
+            <table className="styled-table">
+                <thead>
+                    <tr>
+                        <th>Hole</th>
+                        {[...Array(9)].map((_, index) => (
+                            <th key={index}>{10 + index}</th>
+                        ))}
+                        <th>Total</th>
+                    </tr>
+                    <tr>
+                        <th>Distance</th>
+                        <th>387</th>
+                        <th>374</th>
+                        <th>164</th>
+                        <th>340</th>
+                        <th>364</th>
+                        <th>555</th>
+                        <th>215</th>
+                        <th>346</th>
+                        <th>375</th>
+                        <th>3120</th>
+                    </tr>
+                    <tr>
+                        <th>Par</th>
+                        <th>4</th>
+                        <th>4</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th>4</th>
+                        <th>5</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th>4</th>
+                        <th>35</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {teamRows.map(({ teamName, teamId }) => {
+                        const teamScores = getTeamScores(teamId);
+                        const teamTotal = teamScores.reduce((acc, score) => acc + score, 0);
+                        return (
+                            <tr key={teamId}>
+                                <td>{teamName}</td>
+                                {teamScores.map((score, index) => (
+                                    <td key={index}>{score}</td>
+                                ))}
+                                <td>{teamTotal}</td>
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </table>
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                 {[...Array(9)].map((_, index) => (
                     <div key={index}>
-                        <label>Hole {index + 1}:</label>
+                        <label>Hole {10 + index}:</label>
                         <input
                             type="number"
                             value={localScores[index]}
@@ -64,17 +135,6 @@ const AlternateShot = ({ scores, teamTotals, users }) => {
                 ))}
                 <button type="submit">Submit Scores</button>
             </form>
-
-            <h2>Alternate Shot Scores</h2>
-            <ul>
-                {Object.entries(scores).map(([teamId, team]) => (
-                    <li key={teamId}>
-                        {teamId}: {team.total}
-                    </li>
-                ))}
-            </ul>
-
-         
         </div>
     );
 };
