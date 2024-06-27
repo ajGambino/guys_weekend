@@ -15,7 +15,7 @@ code {
 @import url('https://fonts.googleapis.com/css2?family=Dai+Banna+SIL:wght@600&display=swap');
 
   .app-container {
-    height: 100vh;
+    min-height: 100vh;
     background-image: url("https://i.ibb.co/NNNMNjS/Untitled-design-2.png");
     background-repeat: no-repeat;
     background-size: cover;
