@@ -88,10 +88,10 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
     };
 
     const teamRows = [
-        { teamName: 'AJJB', teamId: 'team1' },
-        { teamName: 'CKCD', teamId: 'team3' },
-        { teamName: 'BANA', teamId: 'team2' },
-        { teamName: 'GMPM', teamId: 'team4' }
+        { teamName: 'AJ & Cleve', teamId: 'team1' },
+        { teamName: 'Craig & Det', teamId: 'team3' },
+        { teamName: 'NA$$TY & Aunkst', teamId: 'team2' },
+        { teamName: 'Greg & Turtle', teamId: 'team4' }
     ];
 
     const sortedTeamRows = teamRows
@@ -105,6 +105,26 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
     return (
         <div>
             <h1>Own Ball</h1>
+            
+            <table className="styled-table">
+                <thead>
+                    <tr>
+                        <th>Team</th>
+                        <th>Score</th>
+                        <th>Thru</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {sortedTeamRows.map(({ teamName, relativeToPar, holesCompleted }) => (
+                        <tr key={teamName}>
+                            <td>{teamName}</td>
+                            <td>{relativeToPar === 0 ? 'E' : relativeToPar > 0 ? `+${relativeToPar}` : relativeToPar}</td>
+                            <td>{holesCompleted}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+
             <table className="styled-table">
                 <thead>
                     <tr>
@@ -112,8 +132,6 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
                         {[...Array(9)].map((_, index) => (
                             <th key={index}>{index + 1}</th>
                         ))}
-                        <th>Total</th>
-                        <th>Thru</th>
                     </tr>
                     <tr>
                         <th>Yds</th>
@@ -126,7 +144,6 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
                         <th>318</th>
                         <th>356</th>
                         <th>157</th>
-                        <th>3012</th>
                     </tr>
                     <tr>
                         <th>Par</th>
@@ -139,22 +156,20 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
                         <th>4</th>
                         <th>4</th>
                         <th>3</th>
-                        <th>35</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {sortedTeamRows.map(({ teamName, teamId, teamScores, relativeToPar, holesCompleted }) => (
+                    {sortedTeamRows.map(({ teamName, teamId, teamScores }) => (
                         <tr key={teamId}>
                             <td>{teamName}</td>
                             {teamScores.map((scores, index) => (
                                 <td key={index}>{scores[0] + scores[1]}</td>
                             ))}
-                            <td>{relativeToPar === 0 ? 'E' : relativeToPar > 0 ? `+${relativeToPar}` : relativeToPar}</td>
-                            <td>{holesCompleted}</td>
                         </tr>
                     ))}
                 </tbody>
             </table>
+
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                 {[...Array(9)].map((_, index) => (
                     <div key={index}>
@@ -163,6 +178,7 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
                             type="number"
                             value={localScores[index]}
                             onChange={(e) => handleChange(index, e.target.value)}
+                            style={{ width: '40px' }} // Adjust width as needed
                         />
                     </div>
                 ))}

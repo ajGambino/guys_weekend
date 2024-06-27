@@ -73,10 +73,10 @@ const Scramble2 = ({ scores, teamTotals, users }) => {
     };
 
     const teamRows = [
-        { teamName: 'AJJB', teamId: 'team1' },
-        { teamName: 'CKCD', teamId: 'team3' },
-        { teamName: 'BANA', teamId: 'team2' },
-        { teamName: 'GMPM', teamId: 'team4' }
+        { teamName: 'AJ & Cleve', teamId: 'team1' },
+        { teamName: 'Craig & Det', teamId: 'team3' },
+        { teamName: 'NA$$TY & Aunkst', teamId: 'team2' },
+        { teamName: 'Greg & Turtle', teamId: 'team4' }
     ];
 
     const sortedTeamRows = teamRows.map(({ teamName, teamId }) => {
@@ -94,6 +94,26 @@ const Scramble2 = ({ scores, teamTotals, users }) => {
     return (
         <div>
             <h1>2-man Scramble</h1>
+
+            <table className="styled-table">
+                <thead>
+                    <tr>
+                        <th>Team</th>
+                        <th>Score</th>
+                        <th>Thru</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {sortedTeamRows.map(({ teamName, relativeToPar, playedHoles }) => (
+                        <tr key={teamName}>
+                            <td>{teamName}</td>
+                            <td>{relativeToPar === 0 ? 'E' : (relativeToPar > 0 ? `+${relativeToPar}` : relativeToPar)}</td>
+                            <td>{playedHoles}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+
             <table className="styled-table">
                 <thead>
                     <tr>
@@ -101,8 +121,6 @@ const Scramble2 = ({ scores, teamTotals, users }) => {
                         {[...Array(9)].map((_, index) => (
                             <th key={index}>{10 + index}</th>
                         ))}
-                        <th>Total</th>
-                        <th>Thru</th>
                     </tr>
                     <tr>
                         <th>Yds</th>
@@ -115,31 +133,26 @@ const Scramble2 = ({ scores, teamTotals, users }) => {
                         <th>419</th>
                         <th>459</th>
                         <th>407</th>
-                        <th>3048</th>
-                        <th></th>
                     </tr>
                     <tr>
                         <th>Par</th>
                         {parValues.map((par, index) => (
                             <th key={index}>{par}</th>
                         ))}
-                        <th>36</th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    {sortedTeamRows.map(({ teamName, teamId, teamScores, relativeToPar, playedHoles }) => (
+                    {sortedTeamRows.map(({ teamName, teamId, teamScores }) => (
                         <tr key={teamId}>
                             <td>{teamName}</td>
                             {teamScores.map((score, index) => (
                                 <td key={index}>{score}</td>
                             ))}
-                            <td>{relativeToPar === 0 ? 'E' : (relativeToPar > 0 ? `+${relativeToPar}` : relativeToPar)}</td>
-                            <td>{playedHoles}</td>
                         </tr>
                     ))}
                 </tbody>
             </table>
+
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                 {[...Array(9)].map((_, index) => (
                     <div key={index}>
@@ -148,6 +161,7 @@ const Scramble2 = ({ scores, teamTotals, users }) => {
                             type="number"
                             value={localScores[index]}
                             onChange={(e) => handleChange(index, e.target.value)}
+                            style={{ width: '40px' }} // Adjust width as needed
                         />
                     </div>
                 ))}

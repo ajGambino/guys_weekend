@@ -78,8 +78,8 @@ const Scramble4 = ({ scores, teamTotals, users }) => {
     };
 
     const teamRows = [
-        { teamName: 'AJJB CKCD', teamScramble4Id: 'teamScramble4_1' },
-        { teamName: 'BANA GMPM', teamScramble4Id: 'teamScramble4_2' }
+        { teamName: 'AJ Cleve Craig Det', teamScramble4Id: 'teamScramble4_1' },
+        { teamName: 'NA$$TY Aunkst Greg Turle ', teamScramble4Id: 'teamScramble4_2' }
     ];
 
     const sortedTeamRows = teamRows
@@ -93,6 +93,26 @@ const Scramble4 = ({ scores, teamTotals, users }) => {
     return (
         <div>
             <h1>4-man Scramble</h1>
+            
+            <table className="styled-table">
+                <thead>
+                    <tr>
+                        <th>Team</th>
+                        <th>Score</th>
+                        <th>Thru</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {sortedTeamRows.map(({ teamName, relativeToPar, holesCompleted }) => (
+                        <tr key={teamName}>
+                            <td>{teamName}</td>
+                            <td>{relativeToPar === 0 ? 'E' : relativeToPar > 0 ? `+${relativeToPar}` : relativeToPar}</td>
+                            <td>{holesCompleted}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+
             <table className="styled-table">
                 <thead>
                     <tr>
@@ -100,8 +120,6 @@ const Scramble4 = ({ scores, teamTotals, users }) => {
                         {[...Array(9)].map((_, index) => (
                             <th key={index}>{index + 1}</th>
                         ))}
-                        <th>Total</th>
-                        <th>Thru</th>
                     </tr>
                     <tr>
                         <th>Yds</th>
@@ -114,7 +132,6 @@ const Scramble4 = ({ scores, teamTotals, users }) => {
                         <th>318</th>
                         <th>356</th>
                         <th>157</th>
-                        <th>3012</th>
                     </tr>
                     <tr>
                         <th>Par</th>
@@ -127,22 +144,20 @@ const Scramble4 = ({ scores, teamTotals, users }) => {
                         <th>4</th>
                         <th>4</th>
                         <th>3</th>
-                        <th>35</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {sortedTeamRows.map(({ teamName, teamScramble4Id, teamScores, relativeToPar, holesCompleted }) => (
+                    {sortedTeamRows.map(({ teamName, teamScramble4Id, teamScores }) => (
                         <tr key={teamScramble4Id}>
                             <td>{teamName}</td>
                             {teamScores.map((score, index) => (
                                 <td key={index}>{score}</td>
                             ))}
-                            <td>{relativeToPar === 0 ? 'E' : relativeToPar > 0 ? `+${relativeToPar}` : relativeToPar}</td>
-                            <td>{holesCompleted}</td>
                         </tr>
                     ))}
                 </tbody>
             </table>
+
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                 {[...Array(9)].map((_, index) => (
                     <div key={index}>
