@@ -292,9 +292,9 @@ label {
 }
 
 .input-container input {
-    width: 40px; /* Fixed width to prevent layout shifts */
+    width: 1.5rem; /* Fixed width to prevent layout shifts */
     font-size: 16px; /* Prevent zoom on mobile */
-    margin: 0.3rem;
+    
 }
 
 }
