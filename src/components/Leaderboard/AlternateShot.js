@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ref, set, update, onValue } from 'firebase/database';
+import { ref, set, update, onValue, get } from 'firebase/database';
 import { rtdb, auth } from '../../firebase';
 
 const AlternateShot = ({ scores, teamTotals, users }) => {
@@ -28,33 +28,45 @@ const AlternateShot = ({ scores, teamTotals, users }) => {
     }, [teamId]);
 
     const handleChange = (holeIndex, value) => {
- // Allow empty input, which will be treated as zero
- if (value === '' || /^\d+$/.test(value)) {
-    const newScores = [...localScores];
-    newScores[holeIndex] = value === '' ? '0' : value; // Treat empty input as zero
-    setLocalScores(newScores);
-} else {
-    alert('Please enter a valid score (0 or any positive whole number).');
-}
-};
+        // Allow empty input, which will be treated as zero upon submission
+        if (value === '' || /^\d+$/.test(value)) {
+            const newScores = [...localScores];
+            newScores[holeIndex] = value;
+            setLocalScores(newScores);
+        } else {
+            alert('Please enter a valid score (0 or any positive whole number).');
+        }
+    };
 
     const handleSubmit = async () => {
-        if (!teamId) return;
-        const teamScoresRef = ref(rtdb, `scores/alternateShot/${teamId}/holes`);
-        const totalScore = localScores.reduce((acc, score) => acc + Number(score), 0);
+        const userId = currentUser.uid;
+        const userScoresRef = ref(rtdb, `scores/alternateShot/${userId}/holes`);
 
-        await set(teamScoresRef, localScores.reduce((acc, score, index) => {
+        // Convert empty fields to zero upon submission
+        const scoresToSubmit = localScores.map(score => (score === '' ? '0' : score));
+        const totalScore = scoresToSubmit.reduce((acc, score) => acc + Number(score), 0);
+
+        await set(userScoresRef, scoresToSubmit.reduce((acc, score, index) => {
             acc[index + 1] = Number(score);
             return acc;
         }, {}));
 
-        await set(ref(rtdb, `scores/alternateShot/${teamId}/total`), totalScore);
+        await set(ref(rtdb, `scores/alternateShot/${userId}/total`), totalScore);
 
         // Update the team total
-        const teamRef = ref(rtdb, `teams/${teamId}/alternateShotTotal`);
-        await update(teamRef, { alternateShotTotal: totalScore });
-    };
+        const userRef = ref(rtdb, `users/${userId}`);
+        onValue(userRef, async (snapshot) => {
+            const user = snapshot.val();
+            const teamId = user.teamId;
+            const teamScoresRef = ref(rtdb, `teams/${teamId}/alternateShotTotal`);
 
+            const teamSnapshot = await get(teamScoresRef);
+            const teamTotal = teamSnapshot.val() || 0;
+            const newTeamTotal = teamTotal + totalScore;
+
+            await update(teamScoresRef, { alternateShotTotal: newTeamTotal });
+        }, { onlyOnce: true });
+    };
     const getTeamScores = (teamId) => {
         const teamScoresRef = ref(rtdb, `scores/alternateShot/${teamId}/holes`);
         let teamScores = Array(9).fill(0);

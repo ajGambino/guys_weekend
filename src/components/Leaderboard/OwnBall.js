@@ -27,45 +27,46 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
     }, [currentUser, userScores, onInputChange]);
 
     const handleChange = (holeIndex, value) => {
-   
+        // Allow empty input, which will be treated as zero upon submission
         if (value === '' || /^\d+$/.test(value)) {
-           const newScores = [...localScores];
-           newScores[holeIndex] = value === '' ? '0' : value; // Treat empty input as zero
-           setLocalScores(newScores);
-       } else {
-           alert('Please enter a valid score (0 or any positive whole number).');
-       }
-       };
-
+            const newScores = [...localScores];
+            newScores[holeIndex] = value;
+            setLocalScores(newScores);
+        } else {
+            alert('Please enter a valid score (0 or any positive whole number).');
+        }
+    };
+    
     const handleSubmit = async () => {
         const userId = currentUser.uid;
         const userScoresRef = ref(rtdb, `scores/ownBall/${userId}/holes`);
-        const totalScore = localScores.reduce((acc, score) => acc + Number(score), 0);
-
-        await set(userScoresRef, localScores.reduce((acc, score, index) => {
+    
+        // Convert empty fields to zero upon submission
+        const scoresToSubmit = localScores.map(score => (score === '' ? '0' : score));
+        const totalScore = scoresToSubmit.reduce((acc, score) => acc + Number(score), 0);
+    
+        await set(userScoresRef, scoresToSubmit.reduce((acc, score, index) => {
             acc[index + 1] = Number(score);
             return acc;
         }, {}));
-
+    
         await set(ref(rtdb, `scores/ownBall/${userId}/total`), totalScore);
-
+    
         // Update the team total
         const userRef = ref(rtdb, `users/${userId}`);
         onValue(userRef, async (snapshot) => {
             const user = snapshot.val();
             const teamId = user.teamId;
             const teamScoresRef = ref(rtdb, `teams/${teamId}/ownBallTotal`);
-
+    
             const teamSnapshot = await get(teamScoresRef);
             const teamTotal = teamSnapshot.val() || 0;
             const newTeamTotal = teamTotal + totalScore;
-
+    
             await update(teamScoresRef, { ownBallTotal: newTeamTotal });
         }, { onlyOnce: true });
-
-        // Update the parent component with the new scores
-        onInputChange(localScores);
     };
+    
 
     const getTeamScores = (teamId) => {
         const teamMembers = Object.entries(users).filter(([userId, user]) => user.teamId === teamId);
