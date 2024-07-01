@@ -269,6 +269,14 @@ button {
 
 @media (max-width: 768px) {
   .results-container {
-    height: 40vh;
+    height: 50vh;
+  }
+  
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="password"],
+  textarea {
+      font-size: 16px; /* Ensure font size is 16px or larger on smaller screens */
   }
 }
