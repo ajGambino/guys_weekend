@@ -59,8 +59,9 @@ const Results = () => {
 
     return (
         <div className="results-page">
+            <h2>History</h2>
             <div className="results-container">
-                <h2>History</h2>
+                
                 {results.map((result, index) => {
                     const matchNumber = results.length - index;
                     return (

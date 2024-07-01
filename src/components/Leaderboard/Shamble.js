@@ -22,16 +22,16 @@ const Shamble = ({ scores, teamTotals, users }) => {
     }, [userId]);
 
     const handleChange = (holeIndex, value) => {
+   
+        if (value === '' || /^\d+$/.test(value)) {
+           const newScores = [...localScores];
+           newScores[holeIndex] = value === '' ? '0' : value; // Treat empty input as zero
+           setLocalScores(newScores);
+       } else {
+           alert('Please enter a valid score (0 or any positive whole number).');
+       }
+       };
 
-        if (!/^\d+$/.test(value)) {
-            alert('Please enter a valid score (0 or any positive whole number).');
-            return;
-        }
-        
-        const newScores = [...localScores];
-        newScores[holeIndex] = value;
-        setLocalScores(newScores);
-    };
 
     const handleSubmit = async () => {
         const userScoresRef = ref(rtdb, `scores/shamble/${userId}/holes`);

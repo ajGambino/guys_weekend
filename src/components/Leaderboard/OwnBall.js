@@ -27,15 +27,15 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
     }, [currentUser, userScores, onInputChange]);
 
     const handleChange = (holeIndex, value) => {
-
-        if (!/^\d+$/.test(value)) {
-            alert('Please enter a valid score (0 or any positive whole number).');
-            return;
-        }
-        const newScores = [...localScores];
-        newScores[holeIndex] = value;
-        setLocalScores(newScores);
-    };
+   
+        if (value === '' || /^\d+$/.test(value)) {
+           const newScores = [...localScores];
+           newScores[holeIndex] = value === '' ? '0' : value; // Treat empty input as zero
+           setLocalScores(newScores);
+       } else {
+           alert('Please enter a valid score (0 or any positive whole number).');
+       }
+       };
 
     const handleSubmit = async () => {
         const userId = currentUser.uid;
