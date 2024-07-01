@@ -43,7 +43,6 @@ const PlaceBet = () => {
         const selectedDescription = event.target.value;
         setBetDescription(selectedDescription);
 
-        // Reset the 'Other' description input when the description is changed
         if (selectedDescription !== 'other') {
             setOtherDescription('');
         }
@@ -54,7 +53,6 @@ const PlaceBet = () => {
     };
 
     useEffect(() => {
-        // Fetch player names from Firebase Firestore
         const fetchPlayerNames = async () => {
             try {
                 const snapshot = await getDocs(collection(db, 'users'));
@@ -69,7 +67,6 @@ const PlaceBet = () => {
     }, []);
 
     useEffect(() => {
-        // Fetch the bets collection from Firebase Firestore
         const fetchBets = async () => {
             try {
                 const betsRef = collection(db, 'bets');
@@ -84,7 +81,16 @@ const PlaceBet = () => {
         fetchBets();
     }, []);
 
+    
     const handlePlaceBet = async () => {
+        const amount = Number(betAmount);
+
+        // Validate that bet amount is not zero or negative
+        if (amount <= 0) {
+            alert('Please enter a valid bet amount greater than zero.');
+            return;
+        }
+
         // Validate that both winner and loser are selected
         if (!betWinner || !betLoser) {
             alert('Please select both a winner and a loser.');
@@ -109,32 +115,24 @@ const PlaceBet = () => {
         }
 
         try {
-            // Create a timestamp using the current date and time
             const timestamp = serverTimestamp();
-
-            // Convert the bet amount to a number
             const amount = Number(betAmount);
 
-            // Fetch the documents of the winner and additional winner based on their names
             const winnerQuerySnapshot = await getDocs(query(collection(db, 'users'), where('name', 'in', [betWinner, additionalWinner])));
 
-            // Check if the winner documents exist
             if (winnerQuerySnapshot.empty) {
                 console.error('Error placing bet: Invalid winner or additional winner.');
                 return;
             }
 
-            // Update the net field for the winners
             winnerQuerySnapshot.forEach(async (winnerDoc) => {
                 const winnerNet = winnerDoc.data().net || 0;
                 await updateDoc(doc(db, 'users', winnerDoc.id), { net: winnerNet + amount });
             });
 
             if (betLoser === 'ALL') {
-                // Fetch all users from the collection
                 const playersQuerySnapshot = await getDocs(collection(db, 'users'));
 
-                // Update the net field for all users except the winners
                 playersQuerySnapshot.forEach(async (playerDoc) => {
                     const playerId = playerDoc.id;
                     if (!winnerQuerySnapshot.docs.some((doc) => doc.id === playerId)) {
@@ -143,29 +141,24 @@ const PlaceBet = () => {
                     }
                 });
 
-                // Update the net field for the winners with additional amount
                 winnerQuerySnapshot.forEach(async (winnerDoc) => {
                     const winnerNet = winnerDoc.data().net || 0;
                     await updateDoc(doc(db, 'users', winnerDoc.id), { net: winnerNet + 7 * amount });
                 });
             } else {
-                // Fetch the documents of the loser and additional loser based on their names
                 const loserQuerySnapshot = await getDocs(query(collection(db, 'users'), where('name', 'in', [betLoser, additionalLoser])));
 
-                // Check if the loser documents exist
                 if (loserQuerySnapshot.empty) {
                     console.error('Error placing bet: Invalid loser or additional loser.');
                     return;
                 }
 
-                // Update the net field for the losers
                 loserQuerySnapshot.forEach(async (loserDoc) => {
                     const loserNet = loserDoc.data().net || 0;
                     await updateDoc(doc(db, 'users', loserDoc.id), { net: loserNet - amount });
                 });
             }
 
-            // Add the bet to Firebase Firestore with the user's information and timestamp field
             const betRef = await addDoc(collection(db, 'bets'), {
                 additionalLoser,
                 additionalWinner,
@@ -173,23 +166,20 @@ const PlaceBet = () => {
                 confirmedBy: "",
                 description,
                 loser: betLoser,
-                placedBy: currentUser.uid, // Add the user's ID
+                placedBy: currentUser.uid,
                 timestamp,
                 winner: betWinner,
             });
 
-            // Fetch the newly added bet document from Firebase Firestore
             const betSnapshot = await getDoc(betRef);
             const newBet = {
                 id: betSnapshot.id,
                 ...betSnapshot.data(),
             };
 
-            // Update the bets state by adding the new bet to the existing bets
             setBets((prevBets) => [newBet, ...prevBets]);
 
             console.log('Bet placed successfully!');
-            // Reset the form fields after submitting the bet
             setBetAmount('');
             setBetWinner('');
             setAdditionalWinner('');
@@ -278,8 +268,6 @@ const PlaceBet = () => {
                                 {showAdditionalFields ? 'Hide Teams' : 'Teams?'}
                             </button>
                             </div>
-                            {/* Render bets */}
-
                             <div className='recent-bets'>
                                 <h2>Recent Bets</h2>
                                 {bets.length === 0 ? (

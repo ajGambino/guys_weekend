@@ -27,6 +27,11 @@ const Scramble4 = ({ scores, teamTotals, users }) => {
     }, [teamId]);
 
     const handleChange = (holeIndex, value) => {
+        if (!/^\d+$/.test(value)) {
+            alert('Please enter a valid score (0 or any positive whole number).');
+            return;
+        }
+        
         const newScores = [...localScores];
         newScores[holeIndex] = value;
         setLocalScores(newScores);

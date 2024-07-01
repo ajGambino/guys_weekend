@@ -22,6 +22,12 @@ const Shamble = ({ scores, teamTotals, users }) => {
     }, [userId]);
 
     const handleChange = (holeIndex, value) => {
+
+        if (!/^\d+$/.test(value)) {
+            alert('Please enter a valid score (0 or any positive whole number).');
+            return;
+        }
+        
         const newScores = [...localScores];
         newScores[holeIndex] = value;
         setLocalScores(newScores);

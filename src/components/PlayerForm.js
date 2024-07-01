@@ -22,27 +22,27 @@ const PlayerForm = ({ label, id, value, onChange, playerNames }) => {
         }
     };
 
-    const handleOnBlur = () => {
-        // Check if a winner and loser are both selected and not the same name
-        if (id === 'winner' || id === 'loser') {
-            const winnerValue = document.getElementById('winner').value;
-            const loserValue = document.getElementById('loser').value;
+    // const handleOnBlur = () => {
+    //     // Check if a winner and loser are both selected and not the same name
+    //     if (id === 'winner' || id === 'loser') {
+    //         const winnerValue = document.getElementById('winner').value;
+    //         const loserValue = document.getElementById('loser').value;
 
-            if (winnerValue === loserValue) {
-                alert('Winner and loser cannot be the same name.');
-            }
-        }
+    //         if (winnerValue === loserValue) {
+    //             alert('Winner and loser cannot be the same name.');
+    //         }
+    //     }
 
-        // Check if teams are selected and no name is used twice
-        if (id === 'additional-winner' || id === 'additional-loser') {
-            const teamMembers = [document.getElementById('winner').value, document.getElementById('loser').value, value];
+    //     // Check if teams are selected and no name is used twice
+    //     if (id === 'additional-winner' || id === 'additional-loser') {
+    //         const teamMembers = [document.getElementById('winner').value, document.getElementById('loser').value, value];
 
-            // Check if additional winner/loser is selected and not the same name as winner/loser
-            if (teamMembers.includes(value)) {
-                alert('A player cannot be on both teams.');
-            }
-        }
-    };
+    //         // Check if additional winner/loser is selected and not the same name as winner/loser
+    //         if (teamMembers.includes(value)) {
+    //             alert('A player cannot be on both teams.');
+    //         }
+    //     }
+    // };
 
     return (
         <div className='form'>
@@ -51,7 +51,7 @@ const PlayerForm = ({ label, id, value, onChange, playerNames }) => {
                 id={id}
                 value={value}
                 onChange={handleOnChange}
-                onBlur={handleOnBlur} // onBlur event to trigger validation after focus is lost
+             //   onBlur={handleOnBlur} // onBlur event to trigger validation after focus is lost
             >
                 <option value=''>{placeholder}</option>
                 {/* Render options from playerNames */}
