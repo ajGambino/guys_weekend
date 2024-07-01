@@ -246,6 +246,7 @@ button {
 
 .results-page {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   padding: 1rem;
 }
@@ -256,7 +257,7 @@ button {
 
 .results-container {
   overflow: auto;
-  height: 70vh;
+  height: 60vh;
   
 }
 
