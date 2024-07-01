@@ -239,6 +239,7 @@ button {
 
 label {
   margin-right: .5rem; 
+  position: relative;
 }
 
 
