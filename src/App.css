@@ -257,8 +257,7 @@ button {
 
 .results-container {
   overflow: auto;
-  height: 60vh;
-  
+  height: 70vh;
 }
 
 .result-item {
@@ -266,4 +265,10 @@ button {
   box-shadow: 3px 3px lightgrey;
   margin: .5rem;
   padding: .5rem;
+}
+
+@media (max-width: 768px) {
+  .results-container {
+    height: 40vh;
+  }
 }
