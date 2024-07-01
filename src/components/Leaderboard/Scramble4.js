@@ -180,13 +180,13 @@ const Scramble4 = ({ scores, teamTotals, users }) => {
 
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                 {[...Array(9)].map((_, index) => (
-                    <div className="border" key={index}>
+                    <div className="border input-container" key={index}>
                         <label>Hole #{index + 1}:</label>
                         <input
                             type="number"
                             value={localScores[index]}
                             onChange={(e) => handleChange(index, e.target.value)}
-                            style={{ width: '1.5rem' }}
+                           
                         />
                     </div>
                 ))} 
