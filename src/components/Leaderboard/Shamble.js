@@ -181,7 +181,7 @@ const Shamble = ({ scores, teamTotals, users }) => {
                                     type="number"
                                     value={localScores[index]}
                                     onChange={(e) => handleChange(index, e.target.value)}
-                                    style={{ width: '40px' }} // Adjust width as needed
+                                    style={{ width: '1.5rem' }} 
                                 />
                             </div>
                         ))}

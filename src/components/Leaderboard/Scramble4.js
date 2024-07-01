@@ -186,6 +186,7 @@ const Scramble4 = ({ scores, teamTotals, users }) => {
                             type="number"
                             value={localScores[index]}
                             onChange={(e) => handleChange(index, e.target.value)}
+                            style={{ width: '1.5rem' }}
                         />
                     </div>
                 ))} 
