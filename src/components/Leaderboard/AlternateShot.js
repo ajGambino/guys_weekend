@@ -173,13 +173,13 @@ const AlternateShot = ({ scores, teamTotals, users }) => {
             <div className="scorecard-row">
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                 {[...Array(9)].map((_, index) => (
-                    <div className="border" key={index}>
+                    <div className="border input-container" key={index}>
                         <label>Hole {10 + index}:</label>
                         <input
                             type="number"
                             value={localScores[index]}
                             onChange={(e) => handleChange(index, e.target.value)}
-                            style={{ width: '1.5rem' }} // Adjust width as needed
+                            
                         />
                     </div>
                 ))}

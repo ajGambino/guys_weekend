@@ -279,4 +279,22 @@ label {
   textarea {
       font-size: 16px; /* Ensure font size is 16px or larger on smaller screens */
   }
+
+  .input-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem; /* Space between each input row */
+}
+
+.input-container label {
+    margin-right: 0.5rem;
+    white-space: nowrap; 
+}
+
+.input-container input {
+    width: 40px; /* Fixed width to prevent layout shifts */
+    font-size: 16px; /* Prevent zoom on mobile */
+    margin: 0.3rem;
+}
+
 }
