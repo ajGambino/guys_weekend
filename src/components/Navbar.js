@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
 import { auth } from '../firebase'; // Correct import of auth
 
@@ -22,28 +22,25 @@ const Navbar = () => {
     return (
         <nav className='navbar'>
             <ul>
-                 <li>
-                    <Link to="/home">Home</Link>
+                <li>
+                    <NavLink to="/home" activeClassName="active">Home</NavLink>
                 </li>
                 <li>
-                    <Link to="/place-bet">Bets</Link>
+                    <NavLink to="/place-bet" activeClassName="active">Bets</NavLink>
                 </li>
                 <li>
-                    <Link to="/results">Results</Link>
+                    <NavLink to="/results" activeClassName="active">Results</NavLink>
                 </li>
                 <li>
-                    <Link to="/Leaderboard">Live</Link>
-                </li> 
-                {/* <li>
-                    <Link to="/signup">Sign up</Link>
-                </li>  */}
+                    <NavLink to="/Leaderboard" activeClassName="active">Live</NavLink>
+                </li>
                 {currentUser ? (
                     <li>
-                        <button onClick={handleLogout}>Logout</button>
+                        <button className="logout-btn" onClick={handleLogout}>Logout</button>
                     </li>
                 ) : (
                     <li>
-                        <Link to="/login">Login</Link>
+                        <NavLink to="/login" activeClassName="active">Login</NavLink>
                     </li>
                 )}
             </ul>
