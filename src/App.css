@@ -361,7 +361,7 @@ label {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 1rem;;
+  padding: .5rem;
 }
 
 .submit-btn:hover {
