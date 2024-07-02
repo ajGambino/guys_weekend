@@ -90,7 +90,7 @@ const Login = () => {
 
     return (
         <div className='login'>
-            <img src={login}/>
+            <img src={login} alt='clouds'/>
             <button className="google-sign-in" type="button" onClick={handleGoogleLogin}>
               <GoogleLogo /> <span>Sign in with Google</span>
             </button>

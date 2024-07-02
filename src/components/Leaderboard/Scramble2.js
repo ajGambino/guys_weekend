@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ref, set, update, onValue, get } from 'firebase/database';
+import { ref, set, onValue, get } from 'firebase/database';
 import { rtdb, auth } from '../../firebase';
 
 const Scramble2 = ({ scores, teamTotals, users }) => {
@@ -33,41 +33,40 @@ const Scramble2 = ({ scores, teamTotals, users }) => {
             const newScores = [...localScores];
             newScores[holeIndex] = value;
             setLocalScores(newScores);
+            handleSubmit(newScores); // Call handleSubmit to update scores immediately
         } else {
             alert('Please enter a valid score (0 or any positive whole number).');
         }
     };
-    
-    const handleSubmit = async () => {
+
+    const handleSubmit = async (newScores = localScores) => {
         const userId = currentUser.uid;
         const userScoresRef = ref(rtdb, `scores/scramble2/${userId}/holes`);
-    
+        const teamId = users[userId]?.teamId;
+
         // Convert empty fields to zero upon submission
-        const scoresToSubmit = localScores.map(score => (score === '' ? '0' : score));
+        const scoresToSubmit = newScores.map(score => (score === '' ? '0' : score));
         const totalScore = scoresToSubmit.reduce((acc, score) => acc + Number(score), 0);
-    
+
         await set(userScoresRef, scoresToSubmit.reduce((acc, score, index) => {
             acc[index + 1] = Number(score);
             return acc;
         }, {}));
-    
+
         await set(ref(rtdb, `scores/scramble2/${userId}/total`), totalScore);
-    
+
         // Update the team total
-        const userRef = ref(rtdb, `users/${userId}`);
-        onValue(userRef, async (snapshot) => {
-            const user = snapshot.val();
-            const teamId = user.teamId;
-            const teamScoresRef = ref(rtdb, `teams/${teamId}/scramble2Total`);
-    
-            const teamSnapshot = await get(teamScoresRef);
-            const teamTotal = teamSnapshot.val() || 0;
-            const newTeamTotal = teamTotal + totalScore;
-    
-            await update(teamScoresRef, { scramble2Total: newTeamTotal });
-        }, { onlyOnce: true });
+        const teamScoresRef = ref(rtdb, `scores/scramble2/${teamId}/holes`);
+        const teamSnapshot = await get(teamScoresRef);
+        const teamData = teamSnapshot.val() || {};
+        const updatedTeamData = { ...teamData };
+
+        scoresToSubmit.forEach((score, index) => {
+            updatedTeamData[index + 1] = Number(score);
+        });
+
+        await set(teamScoresRef, updatedTeamData);
     };
-    
 
     const getTeamScores = (teamId) => {
         const teamScoresRef = ref(rtdb, `scores/scramble2/${teamId}/holes`);
@@ -172,22 +171,23 @@ const Scramble2 = ({ scores, teamTotals, users }) => {
                 </tbody>
             </table>
             <h3 className="scorecard-title">Scorecard</h3>
-<div className="scorecard-row">
-            <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
-                {[...Array(9)].map((_, index) => (
-                    <div className="border input-container" key={index}>
-                        <label>Hole {10 + index}:</label>
-                        <input
-                            type="number"
-                            value={localScores[index]}
-                            onChange={(e) => handleChange(index, e.target.value)}
-                           
-                        />
-                    </div>
-                ))}
-                <div className='submit-btn-container'>
-                <button className='submit-btn' type="submit">Submit Scores</button></div>
-            </form></div>
+            <div className="scorecard-row">
+                <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+                    {[...Array(9)].map((_, index) => (
+                        <div className="border input-container" key={index}>
+                            <label>Hole {10 + index}:</label>
+                            <input
+                                type="number"
+                                value={localScores[index]}
+                                onChange={(e) => handleChange(index, e.target.value)}
+                            />
+                        </div>
+                    ))}
+                    {/* <div className='submit-btn-container'>
+                        <button className='submit-btn' type="submit">Submit Scores</button>
+                    </div> */}
+                </form>
+            </div>
         </div>
     );
 };
