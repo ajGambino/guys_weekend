@@ -7,6 +7,7 @@ import Scramble2 from './Scramble2';
 import Scramble4 from './Scramble4';
 import Shamble from './Shamble';
 import { useAuth } from '../AuthContext';
+import Footer from '../Footer';
 
 const Leaderboard = () => {
     const { currentUser } = useAuth();
@@ -103,6 +104,7 @@ const Leaderboard = () => {
     }
 
     return (
+        <div>
         <div className='leaderboard'>
             <h1>Leaderboard</h1>
             <table className="styled-table">
@@ -145,6 +147,9 @@ const Leaderboard = () => {
                 </nav>
             </div>
             {renderCurrentFormat()}
+           
+        </div>
+        <Footer />
         </div>
     );
 };

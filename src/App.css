@@ -5,6 +5,7 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+
 /* sign up */
 .signup {
   display: flex;
@@ -16,6 +17,7 @@ body {
 
 .final {
   display:flex;
+  
 }
 
 
@@ -390,10 +392,6 @@ label {
   padding: .5rem;
 }
 
-.final button {
-  color: #009879
-}
-
 .submit-btn:hover {
   background-color: #007f67;
 }
@@ -416,8 +414,10 @@ label {
     color: white;
     background-color: red;
     border-radius: 1rem;
-    border-color: white;;
+    border-color: white;
+    cursor: pointer;
   }
+  
   
   input[type="text"],
   input[type="number"],
@@ -444,7 +444,28 @@ label {
     flex: 1;
   }
 
+  footer {
+    background-color:#009879 ;
+    border-top: 2px solid #007f67;
+    color: white;
+    text-align: center;
+    margin: 2rem 0 0 0;
+    padding: -.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: .8rem;
+    gap: .5rem;
+  }
 
+
+  .github-logo {
+    height: 3rem;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    padding-top: .3rem;
+    }
 
 @media (max-width: 768px) {
   .results-container {

@@ -10,12 +10,14 @@ import PlaceBet from './components/PlaceBet';
 import Leaderboard from './components/Leaderboard/Leaderboard';
 import './App.css'
 
+
 const App = () => {
   return (
     <Router>
       <AuthProvider>
+  
         <div className="app-container">
-          <Navbar />
+         <Navbar />
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
@@ -25,6 +27,7 @@ const App = () => {
             <Route path="/results" element={<Results />} />
             <Route path='/leaderboard' element = {<Leaderboard />} />
           </Routes>
+         
         </div>
       </AuthProvider>
     </Router>
