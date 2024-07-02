@@ -1,4 +1,54 @@
+/* Global styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
+/* Navbar styles */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 2px solid black;
+  width: 100%;
+  background-image:  url("https://i.ibb.co/NNNMNjS/Untitled-design-2.png");
+  background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.navbar ul {
+  display: flex;
+  justify-content: space-around;
+  font-size: 1rem;
+  align-items: flex-end;
+  height: 2rem;
+  padding: 0.5rem 0.2rem 0 0.2rem;
+  margin: 0;
+  list-style: none;
+}
+
+.navbar li {
+  list-style: none;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.navbar a:visited {
+  color: inherit;
+}
+
+.navbar .active {
+  font-size: 1.5rem;
+  border-bottom: 2px solid white;
+  text-shadow: 1px 1px white;
+}
+
+/* Other styles... */
 
 .styled-table {
   border-collapse: collapse;
@@ -14,7 +64,6 @@
   background-color: #009879;
   color: #ffffff;
   text-align: center;
- 
 }
 
 .styled-table th,
@@ -42,18 +91,16 @@ h6 {
 
 input[type="number"],
 input[type="text"] {
-  -webkit-text-size-adjust: 100%; 
+  -webkit-text-size-adjust: 100%;
   margin: 0.3rem;
   width: 1.9rem;
 }
-
 
 .login {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
- 
 }
 
 .login input {
@@ -63,44 +110,6 @@ input[type="text"] {
 .login img {
   height: 15rem;
   margin: .5rem;
-}
-
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  border-bottom: 2px solid black;
- 
-  width: 100%;
-}
-
-.navbar ul {
-  display: flex;
-  justify-content: space-around;
-  font-size: 1rem;
-  align-items: flex-end;
-  height: 2rem;
-  padding: .5rem .2rem 0 .2rem;
- 
-}
-
-.navbar li {
-  list-style: none;
-}
-
-.navbar a {
-  text-decoration: none; 
-  color: inherit; 
-}
-
-.navbar a:visited {
-  color: inherit; 
-}
-
-.navbar .active {
-  font-size: 1.5rem;
-  border-bottom: 2px solid white;
-  text-shadow: 1px 1px white;
 }
 
 h1 {
@@ -138,6 +147,7 @@ ul {
   text-align: center;
   margin-top: 3rem;
 }
+
 .submit-btn {
   background-color: #009879;
   color: white;
@@ -175,14 +185,12 @@ ul {
   color: #757575;
 }
 
-
 /* own ball styles */
 .own-ball, .leaderboard, .scramble4, .scramble2, .alt, .shamble {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  
 }
 
 .own-container {
@@ -195,7 +203,7 @@ ul {
 .scorecard-row form {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center; 
+  justify-content: center;
 }
 
 .scorecard-title {
@@ -206,6 +214,7 @@ ul {
   padding: .5rem;
   margin: 0rem 0;
 }
+
 .border {
   border: 1px solid #009879;
   margin: .2rem;
@@ -226,14 +235,14 @@ button {
   justify-content: center;
   align-items: center;
 }
- 
+
 .home-page h1 {
   font-size: 3rem;
   text-shadow: 2px 2px white;
   margin-top: 2rem;
 }
 
-h1, h2  {
+h1, h2 {
   text-shadow: 2px 2px white;
 }
 
@@ -241,13 +250,12 @@ h1, h2  {
   width: 100%;
   display: flex;
   justify-content: center;
-  
 }
 
 .table-container {
   display: flex;
   justify-content: space-around;
-  width: 50%; 
+  width: 50%;
   border: 2px solid black;
   padding: 1rem;
   box-shadow: 3px 3px grey;
@@ -263,27 +271,22 @@ h1, h2  {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  
 }
 
 .name-column h2,
 .net-column h2 {
   margin: 0;
-  font-size: 1.2rem; 
-  
+  font-size: 1.2rem;
 }
 
 .name-column p,
 .net-column p {
   margin: 0.5rem 0;
-  
 }
 
 .net-column p {
   text-align: right;
-  
 }
-
 
 /* bets */
 
@@ -297,11 +300,11 @@ h1, h2  {
 }
 
 .bet-form {
-  display:flex;
+  display: flex;
   width: 100%;
   flex-direction: column;
   border: 2px solid black;
-  align-items:  center;
+  align-items: center;
   box-shadow: 3px 3px grey;
   height: 30vh;
   justify-content: center;
@@ -318,13 +321,12 @@ h1, h2  {
 }
 
 label {
-  margin-right: 0.4rem; 
+  margin-right: 0.4rem;
 }
 
 #bet-amount-label {
   margin-right: -.4rem;
 }
-
 
 /* results/history */
 
@@ -355,13 +357,13 @@ label {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 0 1 30%; /* Ensure the button container matches the input container width */
-  margin-bottom: 0.5rem; /* Match the space between rows */
+  flex: 0 1 30%;
+  margin-bottom: 0.5rem;
 }
 
 .submit-btn {
-  width: 100%; 
-  height: 100%; 
+  width: 100%;
+  height: 100%;
   background-color: #009879;
   color: white;
   border: none;
@@ -380,34 +382,29 @@ label {
   .results-container {
     height: 50vh;
   }
-  
+
   input[type="text"],
   input[type="number"],
   input[type="email"],
   input[type="password"],
   textarea {
-      font-size: 16px; /* Ensure font size is 16px or larger on smaller screens */
+    font-size: 16px;
   }
 
   .input-container {
     display: flex;
     align-items: center;
-    margin-bottom: 0.5rem; /* Space between each input row */
+    margin-bottom: 0.5rem;
     flex: 0 1 30%;
-}
+  }
 
-.input-container label {
+  .input-container label {
     margin-right: 0.5rem;
-    white-space: nowrap; 
-}
+    white-space: nowrap;
+  }
 
-.input-container input {
-    width: 1.5rem; /* Fixed width to prevent layout shifts */
-    font-size: 16px; /* Prevent zoom on mobile */
-}
-
-
-
-
-
+  .input-container input {
+    width: 1.5rem;
+    font-size: 16px;
+  }
 }
