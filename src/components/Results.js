@@ -87,7 +87,7 @@ const Results = () => {
                                         {currentUser.uid === result.placedBy ? (
                                             <p>Sorry, you cannot confirm a bet you recorded.</p>
                                         ) : (
-                                            <button onClick={() => handleConfirmBet(result.id, result.placedBy)}>
+                                            <button className='confirm' onClick={() => handleConfirmBet(result.id, result.placedBy)}>
                                                 Confirm?
                                             </button>
                                         )}

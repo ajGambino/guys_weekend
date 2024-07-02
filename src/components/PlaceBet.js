@@ -198,7 +198,6 @@ const PlaceBet = () => {
                 {currentUser ? (
                     <>
                         <div className='bet-form-container'>
-                          
                            <div className='bet-form'>
                             <div>
                                 <label id="bet-amount-label" htmlFor="amount">Bet Amount: </label>
@@ -246,7 +245,6 @@ const PlaceBet = () => {
                                     />
                                 </>
                             )}
-                            
                             <div>
                                 <label htmlFor="description">Description:</label>
                                 <select
@@ -270,10 +268,10 @@ const PlaceBet = () => {
                                 )}
                             </div>
                             
-                            <button onClick={handleTeamSelectionClick}>
+                            <button className='bet-btn'onClick={handleTeamSelectionClick}>
                                 {showAdditionalFields ? 'Hide Teams' : 'Teams?'}
                             </button>
-                            <button onClick={handlePlaceBet}>Place Bet</button>
+                            <button className='bet-btn' onClick={handlePlaceBet}>Place Bet</button>
                             
                             </div>
                             <div className='recent-bets'>

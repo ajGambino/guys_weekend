@@ -320,6 +320,7 @@ h1, h2 {
   justify-content: center;
 }
 
+
 .recent-bets {
   display: flex;
   flex-direction: column;
@@ -392,11 +393,21 @@ label {
   background-color: #007f67;
 }
 
-@media (max-width: 768px) {
-  .results-container {
-    height: 50vh;
+.bet-btn, .confirm {
+  background-color: #009879;
+  border-color: #007f67;;
+  border-radius: 1rem;
+  padding: 0 .5rem;
+  color: white;
+}
+  
+.final button {
+    color: white;
+    background-color: red;
+    border-radius: 1rem;
+    border-color: white;;
   }
-
+  
   input[type="text"],
   input[type="number"],
   input[type="email"],
@@ -410,6 +421,7 @@ label {
     align-items: center;
     margin-bottom: 0.5rem;
     flex: 0 1 25%;
+    box-sizing: border-box;
   }
 
   .input-container label {
@@ -418,27 +430,21 @@ label {
 
   .input-container input {
     font-size: 16px;
+    flex: 1;
   }
 
-  .scorecard-row form {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+
+
+@media (max-width: 768px) {
+  .results-container {
+    height: 50vh;
   }
+
+
+
   
-  .scorecard-title {
-    margin-top: 1rem;
-  }
-  
-  .border {
-    border: 1px solid #009879;
-    margin: .2rem;
-    padding: .2rem;
-    box-shadow: 1px 2px grey;
-  }
-  
-  .final button {
-    color: #009879
-  }
+
+
+ 
 
 }
