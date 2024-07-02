@@ -169,8 +169,9 @@ const AlternateShot = ({ scores, teamTotals, users }) => {
                     ))}
                 </tbody>
             </table>
-            <h3>Scorecard</h3>
+            <h3 className="scorecard-title">Scorecard</h3>
             <div className="scorecard-row">
+          
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                 {[...Array(9)].map((_, index) => (
                     <div className="border input-container" key={index}>
@@ -179,7 +180,6 @@ const AlternateShot = ({ scores, teamTotals, users }) => {
                             type="number"
                             value={localScores[index]}
                             onChange={(e) => handleChange(index, e.target.value)}
-                            
                         />
                     </div>
                 ))}

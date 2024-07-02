@@ -175,7 +175,7 @@ const Scramble4 = ({ scores, teamTotals, users }) => {
                     ))}
                 </tbody>
             </table>
-            <h3>Scorecard</h3>
+            <h3 className="scorecard-title">Scorecard</h3>
 <div className='scorecard-row'>
 
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>

@@ -40,7 +40,7 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
     const handleSubmit = async () => {
         const userId = currentUser.uid;
         const userScoresRef = ref(rtdb, `scores/ownBall/${userId}/holes`);
-    
+
         // Convert empty fields to zero upon submission
         const scoresToSubmit = localScores.map(score => (score === '' ? '0' : score));
         const totalScore = scoresToSubmit.reduce((acc, score) => acc + Number(score), 0);
@@ -58,7 +58,6 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
             const user = snapshot.val();
             const teamId = user.teamId;
             const teamScoresRef = ref(rtdb, `teams/${teamId}/ownBallTotal`);
-    
             const teamSnapshot = await get(teamScoresRef);
             const teamTotal = teamSnapshot.val() || 0;
             const newTeamTotal = teamTotal + totalScore;
@@ -175,7 +174,7 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
                     ))}
                 </tbody>
             </table>
-            <h3>Scorecard</h3>
+            <h3 className="scorecard-title">Scorecard</h3>
 <div className='own-container'>
     <div>
             <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
