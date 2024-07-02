@@ -185,7 +185,8 @@ const Shamble = ({ scores, teamTotals, users }) => {
                                 />
                             </div>
                         ))}
-                        <button className='submit-btn' type="submit">Submit Scores</button>
+                        <div className='submit-btn-container'>
+                        <button className='submit-btn' type="submit">Submit Scores</button></div>
                     </form>
                 </div>
                 <div>

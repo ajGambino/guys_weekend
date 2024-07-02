@@ -7,8 +7,10 @@ import Scramble2 from './Scramble2';
 import Scramble4 from './Scramble4';
 import Shamble from './Shamble';
 import { collection, getDocs } from 'firebase/firestore';
+import { useAuth } from '../AuthContext'; // Import the useAuth hook
 
 const Leaderboard = () => {
+    const { currentUser } = useAuth(); // Get the current user
     const [currentFormat, setCurrentFormat] = useState('ownBall');
     const [users, setUsers] = useState({});
     const [scores, setScores] = useState({});
@@ -17,6 +19,8 @@ const Leaderboard = () => {
     const [teamData, setTeamData] = useState([]);
 
     useEffect(() => {
+        if (!currentUser) return; // Don't fetch data if the user is not logged in
+
         const usersRef = ref(rtdb, 'users');
         onValue(usersRef, (snapshot) => {
             const data = snapshot.val();
@@ -42,7 +46,7 @@ const Leaderboard = () => {
         };
 
         fetchTeamsData();
-    }, []);
+    }, [currentUser]);
 
     const calculateTeamTotals = (format) => {
         const teamTotals = {};
@@ -94,6 +98,10 @@ const Leaderboard = () => {
 
     const sortedTeamData = [...teamData].sort((a, b) => b.Pts - a.Pts);
 
+    if (!currentUser) {
+        return <h4 className='live-error'>Please log in to see the live leaderboard.</h4>;
+    }
+
     return (
         <div className='leaderboard'>
             <h1>Leaderboard</h1>
@@ -124,17 +132,17 @@ const Leaderboard = () => {
                 </tbody>
             </table>
             <div className='nav-container'>
-            <nav>
-                <h6>Fri. Elkdale:</h6>
-                <button className="nav-btn" onClick={() => setCurrentFormat('scramble4')}>4-man Scramble</button>
-                <button className="nav-btn" onClick={() => setCurrentFormat('alternateShot')}>Alternate Shot</button>
-                <button className="nav-btn" onClick={() => setCurrentFormat('ownBall')}>Own Ball</button>
+                <nav>
+                    <h6>Fri. Elkdale:</h6>
+                    <button className="nav-btn" onClick={() => setCurrentFormat('scramble4')}>4-man Scramble</button>
+                    <button className="nav-btn" onClick={() => setCurrentFormat('alternateShot')}>Alternate Shot</button>
+                    <button className="nav-btn" onClick={() => setCurrentFormat('ownBall')}>Own Ball</button>
                 </nav>
-            <nav>    
-                <h6>Sat. Holiday Valley:</h6>
-                <button className="nav-btn" onClick={() => setCurrentFormat('shamble')}>Shamble</button>
-                <button className="nav-btn" onClick={() => setCurrentFormat('scramble2')}>2-man Scramble</button>
-            </nav>
+                <nav>
+                    <h6>Sat. Holiday Valley:</h6>
+                    <button className="nav-btn" onClick={() => setCurrentFormat('shamble')}>Shamble</button>
+                    <button className="nav-btn" onClick={() => setCurrentFormat('scramble2')}>2-man Scramble</button>
+                </nav>
             </div>
             {renderCurrentFormat()}
         </div>
