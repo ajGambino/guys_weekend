@@ -18,36 +18,24 @@ const Navbar = () => {
 
     return (
         <nav className='navbar'>
-            <ul>
+            <ul >
                 <li>
-                    <NavLink
-                        to="/home"
-                        className={({ isActive }) => isActive ? 'active' : undefined}
-                    >
+                    <NavLink to="/home" className={({ isActive }) => isActive ? 'active' : undefined}>
                         Home
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink
-                        to="/place-bet"
-                        className={({ isActive }) => isActive ? 'active' : undefined}
-                    >
+                    <NavLink to="/place-bet" className={({ isActive }) => isActive ? 'active' : undefined}>
                         Bets
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink
-                        to="/results"
-                        className={({ isActive }) => isActive ? 'active' : undefined}
-                    >
+                    <NavLink to="/results" className={({ isActive }) => isActive ? 'active' : undefined}>
                         Results
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink
-                        to="/leaderboard"
-                        className={({ isActive }) => isActive ? 'active' : undefined}
-                    >
+                    <NavLink to="/leaderboard" className={({ isActive }) => isActive ? 'active' : undefined}>
                         Live
                     </NavLink>
                 </li>
@@ -57,10 +45,7 @@ const Navbar = () => {
                     </li>
                 ) : (
                     <li>
-                        <NavLink
-                            to="/login"
-                            className={({ isActive }) => isActive ? 'active' : undefined}
-                        >
+                        <NavLink to="/login" className={({ isActive }) => isActive ? 'active' : undefined}>
                             Login
                         </NavLink>
                     </li>
