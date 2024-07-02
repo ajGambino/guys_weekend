@@ -189,7 +189,7 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
                         />
                     </div>
                 ))}
-                <button type="submit">Submit Scores</button>
+                <button className='submit-btn' type="submit">Submit Scores</button>
             </form></div>
  <div>
             <h4>Own Ball Scores</h4>

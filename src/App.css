@@ -99,6 +99,18 @@ ul {
   margin: 0;
 }
 
+.logout-btn {
+  color: black;
+}
+
+.submit-btn {
+  background-color: #009879;
+  color: white;
+}
+
+.nav-btn {
+  color: #009879
+}
 
 /* own ball styles */
 .own-ball, .leaderboard, .scramble4, .scramble2, .alt, .shamble {

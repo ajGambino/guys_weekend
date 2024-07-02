@@ -191,7 +191,7 @@ const Scramble4 = ({ scores, teamTotals, users }) => {
                     </div>
                 ))} 
                 
-                <button type="submit">Submit Scores</button>
+                <button className='submit-btn' type="submit">Submit Scores</button>
             </form>
         </div></div>
     );
