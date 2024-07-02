@@ -199,14 +199,17 @@ const PlaceBet = () => {
                     <>
                         <div className='bet-form-container'>
                            <div className='bet-flexbox'>
-                                <label htmlFor="amount">Bet Amount: </label>
+                           <div className='bet-form'>
+                            <div>
+                                <label id="bet-amount-label" htmlFor="amount">Bet Amount: </label>
                                 <input
                                     type="number"
                                     id="amount"
                                     value={betAmount}
                                     onChange={handleBetAmountChange}
+                                    placeholder="$"
                                 /></div>
-                             <div className='bet-form'>
+                            
                             <PlayerForm
                                 label="Winner"
                                 id="winner"
@@ -223,13 +226,6 @@ const PlaceBet = () => {
                                         onChange={handleAdditionalWinnerChange}
                                         playerNames={playerNames}
                                     />
-                                    <PlayerForm
-                                        label="Additional Loser"
-                                        id="additional-loser"
-                                        value={additionalLoser}
-                                        onChange={handleAdditionalLoserChange}
-                                        playerNames={playerNames}
-                                    />
                                 </>
                             )}
                             <PlayerForm
@@ -239,6 +235,17 @@ const PlaceBet = () => {
                                 onChange={handleBetLoserChange}
                                 playerNames={playerNames}
                             />
+                            {showAdditionalFields && (
+                                <>
+                                    <PlayerForm
+                                        label="Additional Loser"
+                                        id="additional-loser"
+                                        value={additionalLoser}
+                                        onChange={handleAdditionalLoserChange}
+                                        playerNames={playerNames}
+                                    />
+                                </>
+                            )}
                             
                             <div>
                                 <label htmlFor="description">Description:</label>
@@ -263,11 +270,12 @@ const PlaceBet = () => {
                                 )}
                             </div>
                             
-                            <button onClick={handlePlaceBet}>Place Bet</button>
                             <button onClick={handleTeamSelectionClick}>
                                 {showAdditionalFields ? 'Hide Teams' : 'Teams?'}
                             </button>
-                            </div>
+                            <button onClick={handlePlaceBet}>Place Bet</button>
+                            
+                            </div></div>
                             <div className='recent-bets'>
                                 <h2>Recent Bets</h2>
                                 {bets.length === 0 ? (

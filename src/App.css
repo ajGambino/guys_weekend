@@ -216,11 +216,13 @@ button {
 
 .bet-form {
   display:flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  width: 40%;
-  justify-content: flex-start;
-  
+  width: 100%;
+  flex-direction: column;
+  border: 2px solid black;
+  align-items:  center;
+  padding: 1rem;
+  height: 30vh;
+  justify-content: center;
 }
 
 .recent-bets {
@@ -230,7 +232,7 @@ button {
 }
 
 .bet-flexbox {
-  width: 40%;
+  width: 80%;
 }
 
 .bet-flexbox input {
@@ -238,11 +240,15 @@ button {
 }
 
 #other-input {
-  width: 12rem;
+  width: 13rem;
 }
 
 label {
-  margin-right: .5rem; 
+  margin-right: 0.5rem; 
+}
+
+#bet-amount-label {
+  margin-right: -.4rem;
 }
 
 
@@ -288,7 +294,7 @@ label {
     display: flex;
     align-items: center;
     margin-bottom: 0.5rem; /* Space between each input row */
-    flex: 0 1 20%;
+    flex: 0 1 30%;
 }
 
 .input-container label {
@@ -300,6 +306,7 @@ label {
     width: 1.5rem; /* Fixed width to prevent layout shifts */
     font-size: 16px; /* Prevent zoom on mobile */
 }
+
 
 
 
