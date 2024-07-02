@@ -224,17 +224,13 @@ ul {
   margin-top: 1rem;
 }
 
-.scorecard-row {
-  padding: .5rem;
-  margin: 0rem 0;
-}
+
 
 .border {
   border: 1px solid #009879;
   margin: .2rem;
   padding: .2rem;
   box-shadow: 1px 2px grey;
-  font-size: .9rem;
 }
 
 button {
@@ -388,6 +384,10 @@ label {
   padding: .5rem;
 }
 
+.final button {
+  color: #009879
+}
+
 .submit-btn:hover {
   background-color: #007f67;
 }
@@ -409,16 +409,36 @@ label {
     display: flex;
     align-items: center;
     margin-bottom: 0.5rem;
-    flex: 0 1 30%;
+    flex: 0 1 25%;
   }
 
   .input-container label {
-    margin-right: 0.5rem;
     white-space: nowrap;
   }
 
   .input-container input {
-    width: 1.5rem;
     font-size: 16px;
   }
+
+  .scorecard-row form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .scorecard-title {
+    margin-top: 1rem;
+  }
+  
+  .border {
+    border: 1px solid #009879;
+    margin: .2rem;
+    padding: .2rem;
+    box-shadow: 1px 2px grey;
+  }
+  
+  .final button {
+    color: #009879
+  }
+
 }
