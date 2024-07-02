@@ -89,7 +89,9 @@ const Leaderboard = () => {
         }
     };
 
-    const filteredTeams = Object.entries(teams).filter(([key, team]) => !key.includes('Scramble4') && team.members.length === 2).map(([key, team]) => team);
+    // Corrected filtering logic to exclude only the combined teams (e.g., "teamScramble4_1" and "teamScramble4_2")
+    const filteredTeams = Object.values(teams).filter(team => !team.name.includes('/') || team.name.split('/').length === 2);
+
     console.log('Filtered teams:', filteredTeams); // Debug statement
 
     const sortedTeamData = filteredTeams.sort((a, b) => b.Pts - a.Pts);
@@ -124,7 +126,7 @@ const Leaderboard = () => {
                             <td>{team.own}</td>
                             <td>{team.shamble}</td>
                             <td>{team['2man']}</td>
-                            <td>{team.Pts}</td>
+                            <td>{team.Pts.toFixed(2)}</td> {/* Fixed to two decimal places */}
                         </tr>
                     ))}
                 </tbody>

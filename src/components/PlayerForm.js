@@ -47,7 +47,7 @@ const PlayerForm = ({ label, id, value, onChange, playerNames }) => {
     return (
         <div className='form'>
             <label htmlFor={id}>{label}:</label>
-            <select
+            <select className='dropdown'
                 id={id}
                 value={value}
                 onChange={handleOnChange}

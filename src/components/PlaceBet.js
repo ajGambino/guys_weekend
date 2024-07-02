@@ -198,17 +198,19 @@ const PlaceBet = () => {
                 {currentUser ? (
                     <>
                         <div className='bet-form-container'>
+                        <div className='bet-flex'>
                            <div className='bet-form'>
-                            <div>
+                           
+                           <div>
                                 <label id="bet-amount-label" htmlFor="amount">Bet Amount: </label>
-                                <input
+                                <input 
                                     type="number"
                                     id="amount"
                                     value={betAmount}
                                     onChange={handleBetAmountChange}
                                     placeholder="$"
-                                /></div>
-                            
+                                />
+                            </div>
                             <PlayerForm
                                 label="Winner"
                                 id="winner"
@@ -247,7 +249,7 @@ const PlaceBet = () => {
                             )}
                             <div>
                                 <label htmlFor="description">Description:</label>
-                                <select
+                                <select className='dropdown'
                                     id="description"
                                     value={betDescription}
                                     onChange={handleBetDescriptionChange}
@@ -273,7 +275,7 @@ const PlaceBet = () => {
                             </button>
                             <button className='bet-btn' onClick={handlePlaceBet}>Place Bet</button>
                             
-                            </div>
+                            </div></div>
                             <div className='recent-bets'>
                                 <h2>Recent Bets</h2>
                                 {bets.length === 0 ? (

@@ -224,8 +224,6 @@ ul {
   margin-top: 1rem;
 }
 
-
-
 .border {
   border: 1px solid #009879;
   margin: .2rem;
@@ -305,21 +303,23 @@ h1, h2 {
   flex-direction: column;
   align-items: center;
   margin-top: 3rem;
-  width: 90%;
+  width: 100%;
   margin: 1rem auto;
 }
 
 .bet-form {
   display: flex;
   width: 100%;
+  margin: 0 auto;
   flex-direction: column;
-  border: 2px solid black;
-  align-items: center;
-  box-shadow: 3px 3px grey;
-  height: 35vh;
+  align-items: flex-start;
   justify-content: center;
 }
 
+.bet-flex {
+  width: 50%;
+  margin: 0 auto;
+}
 
 .recent-bets {
   display: flex;
@@ -328,7 +328,8 @@ h1, h2 {
 }
 
 #other-input {
-  width: 13rem;
+  width: 12.8rem;
+  margin: .2rem 0;
 }
 
 label {
@@ -337,6 +338,10 @@ label {
 
 #bet-amount-label {
   margin-right: -.4rem;
+}
+
+#amount {
+  width: 4rem;
 }
 
 /* results/history */
@@ -395,10 +400,16 @@ label {
 
 .bet-btn, .confirm {
   background-color: #009879;
-  border-color: #007f67;;
+  border-color: #007f67;
   border-radius: 1rem;
   padding: 0 .5rem;
   color: white;
+  width: 100%;
+}
+
+.dropdown {
+  background-color: white;
+  color: #007f67;
 }
   
 .final button {
@@ -424,9 +435,9 @@ label {
     box-sizing: border-box;
   }
 
-  /* .input-container label {
-    white-space: nowrap;
-  } */
+  .input-container label {
+     white-space: nowrap; 
+  }
 
   .input-container input {
     font-size: 16px;
@@ -440,11 +451,9 @@ label {
     height: 50vh;
   }
 
-
-
-  
-
-
- 
+  .input-container label {
+    font-size: .8rem;
+    margin-right: -.1rem;
+ }
 
 }
