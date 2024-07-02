@@ -94,7 +94,7 @@ const Login = () => {
             <button className="google-sign-in" type="button" onClick={handleGoogleLogin}>
               <GoogleLogo /> <span>Sign in with Google</span>
             </button>
-           
+           <p>Or</p>
             {error && <p>{error}</p>}
             <form onSubmit={handleLogin}>
                 <div>
