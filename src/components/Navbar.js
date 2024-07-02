@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
-import { auth } from '../firebase'; // Correct import of auth
+import { auth } from '../firebase';
 
 const Navbar = () => {
     const { currentUser } = useContext(AuthContext);
@@ -9,10 +9,7 @@ const Navbar = () => {
 
     const handleLogout = async () => {
         try {
-            // Sign out the user
             await auth.signOut();
-
-            // Redirect to the login page or any other desired page
             navigate('/login');
         } catch (error) {
             console.error('Error logging out:', error);
@@ -23,16 +20,36 @@ const Navbar = () => {
         <nav className='navbar'>
             <ul>
                 <li>
-                    <NavLink to="/home" activeClassName="active">Home</NavLink>
+                    <NavLink
+                        to="/home"
+                        className={({ isActive }) => isActive ? 'active' : undefined}
+                    >
+                        Home
+                    </NavLink>
                 </li>
                 <li>
-                    <NavLink to="/place-bet" activeClassName="active">Bets</NavLink>
+                    <NavLink
+                        to="/place-bet"
+                        className={({ isActive }) => isActive ? 'active' : undefined}
+                    >
+                        Bets
+                    </NavLink>
                 </li>
                 <li>
-                    <NavLink to="/results" activeClassName="active">Results</NavLink>
+                    <NavLink
+                        to="/results"
+                        className={({ isActive }) => isActive ? 'active' : undefined}
+                    >
+                        Results
+                    </NavLink>
                 </li>
                 <li>
-                    <NavLink to="/Leaderboard" activeClassName="active">Live</NavLink>
+                    <NavLink
+                        to="/leaderboard"
+                        className={({ isActive }) => isActive ? 'active' : undefined}
+                    >
+                        Live
+                    </NavLink>
                 </li>
                 {currentUser ? (
                     <li>
@@ -40,7 +57,12 @@ const Navbar = () => {
                     </li>
                 ) : (
                     <li>
-                        <NavLink to="/login" activeClassName="active">Login</NavLink>
+                        <NavLink
+                            to="/login"
+                            className={({ isActive }) => isActive ? 'active' : undefined}
+                        >
+                            Login
+                        </NavLink>
                     </li>
                 )}
             </ul>
