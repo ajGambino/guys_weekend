@@ -259,7 +259,7 @@ const Scramble2 = ({ users }) => {
                 <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
                     {[...Array(9)].map((_, index) => (
                         <div className="border input-container" key={index}>
-                            <label>Hole {10 + index}:</label>
+                            <label>Hole #{10 + index}:</label>
                             <input
                                 type="number"
                                 value={localScores[index]}
