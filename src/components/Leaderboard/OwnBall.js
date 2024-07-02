@@ -26,53 +26,52 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
         }
     }, [currentUser, userScores, onInputChange]);
 
-    const handleChange = (holeIndex, value) => {
-        // Allow empty input, which will be treated as zero upon submission
+    const handleChange = async (holeIndex, value) => {
         if (value === '' || /^\d+$/.test(value)) {
             const newScores = [...localScores];
             newScores[holeIndex] = value;
             setLocalScores(newScores);
+
+            const userId = currentUser.uid;
+            const userScoresRef = ref(rtdb, `scores/ownBall/${userId}/holes`);
+
+            const scoresToSubmit = newScores.map(score => (score === '' ? '0' : score));
+            const totalScore = scoresToSubmit.reduce((acc, score) => acc + Number(score), 0);
+
+            await set(userScoresRef, scoresToSubmit.reduce((acc, score, index) => {
+                acc[index + 1] = Number(score);
+                return acc;
+            }, {}));
+
+            await set(ref(rtdb, `scores/ownBall/${userId}/total`), totalScore);
+
+            const userRef = ref(rtdb, `users/${userId}`);
+            onValue(userRef, async (snapshot) => {
+                const user = snapshot.val();
+                const teamId = user.teamId;
+                const teamScoresRef = ref(rtdb, `teams/${teamId}/ownBallTotal`);
+                const teamSnapshot = await get(teamScoresRef);
+                const teamTotal = teamSnapshot.val() || 0;
+                const newTeamTotal = teamTotal + totalScore;
+
+                await update(teamScoresRef, { ownBallTotal: newTeamTotal });
+            }, { onlyOnce: true });
         } else {
             alert('Please enter a valid score (0 or any positive whole number).');
         }
     };
-    
-    const handleSubmit = async () => {
-        const userId = currentUser.uid;
-        const userScoresRef = ref(rtdb, `scores/ownBall/${userId}/holes`);
-
-        // Convert empty fields to zero upon submission
-        const scoresToSubmit = localScores.map(score => (score === '' ? '0' : score));
-        const totalScore = scoresToSubmit.reduce((acc, score) => acc + Number(score), 0);
-    
-        await set(userScoresRef, scoresToSubmit.reduce((acc, score, index) => {
-            acc[index + 1] = Number(score);
-            return acc;
-        }, {}));
-    
-        await set(ref(rtdb, `scores/ownBall/${userId}/total`), totalScore);
-    
-        // Update the team total
-        const userRef = ref(rtdb, `users/${userId}`);
-        onValue(userRef, async (snapshot) => {
-            const user = snapshot.val();
-            const teamId = user.teamId;
-            const teamScoresRef = ref(rtdb, `teams/${teamId}/ownBallTotal`);
-            const teamSnapshot = await get(teamScoresRef);
-            const teamTotal = teamSnapshot.val() || 0;
-            const newTeamTotal = teamTotal + totalScore;
-    
-            await update(teamScoresRef, { ownBallTotal: newTeamTotal });
-        }, { onlyOnce: true });
-    };
-    
 
     const getTeamScores = (teamId) => {
-        const teamMembers = Object.entries(users).filter(([userId, user]) => user.teamId === teamId);
-        const teamScores = Array(9).fill(0).map(() => [0, 0]); // Array of [player1, player2] scores
+        const teamMembers = Object.entries(users)
+            .filter(([userId, user]) => user.teamId === teamId)
+            .sort(([aId], [bId]) => (users[aId].name < users[bId].name ? -1 : 1)); // Ensure sorting by name order
+        const teamScores = Array(9).fill(0).map(() => [0, 0]);
         teamMembers.forEach(([userId], memberIndex) => {
             const userHoles = scores[userId]?.holes || {};
             Object.keys(userHoles).forEach(hole => {
+                if (!teamScores[hole - 1]) {
+                    teamScores[hole - 1] = [0, 0];
+                }
                 teamScores[hole - 1][memberIndex] = userHoles[hole];
             });
         });
@@ -84,7 +83,7 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
         let relativeToPar = 0;
         let holesCompleted = 0;
         teamScores.forEach((scores, index) => {
-            if (scores[0] !== 0 && scores[1] !== 0) { // Ensure both players have scores
+            if (scores[0] !== 0 && scores[1] !== 0) {
                 relativeToPar += (scores[0] + scores[1]) - 2 * par[index];
                 holesCompleted += 1;
             }
@@ -167,41 +166,45 @@ const OwnBall = ({ scores, teamTotals, users, userScores, onInputChange }) => {
                     {sortedTeamRows.map(({ teamName, teamId, teamScores }) => (
                         <tr key={teamId}>
                             <td>{teamName}</td>
-                            {teamScores.map((scores, index) => (
-                                <td key={index}>{scores[0] + scores[1]}</td>
-                            ))}
+                            {teamScores.map((scores, index) => {
+                                const [player1Score, player2Score] = scores;
+                                return (
+                                    <td key={index}>
+                                        {player1Score !== 0 ? player1Score : ''}/{player2Score !== 0 ? player2Score : ''}
+                                    </td>
+                                );
+                            })}
                         </tr>
                     ))}
                 </tbody>
             </table>
             <h3 className="scorecard-title">Scorecard</h3>
-<div className='own-container'>
-    <div>
-            <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
-                {[...Array(9)].map((_, index) => (
-                    <div className='border input-container' key={index}>
-                        <label>Hole #{index + 1}:</label>
-                        <input
-                            type="number"
-                            value={localScores[index]}
-                            onChange={(e) => handleChange(index, e.target.value)}
-                            
-                        />
-                    </div>
-                ))}
-                <div className='submit-btn-container'>
-                <button className='submit-btn' type="submit">Submit Scores</button>
+            <div className='own-container'>
+                <div>
+                    <form onSubmit={(e) => { e.preventDefault(); }}>
+                        {[...Array(9)].map((_, index) => (
+                            <div className='border input-container' key={index}>
+                                <label>Hole #{index + 1}:</label>
+                                <input
+                                    type="number"
+                                    value={localScores[index]}
+                                    onChange={(e) => handleChange(index, e.target.value)}
+                                />
+                            </div>
+                        ))}
+                    </form>
                 </div>
-            </form></div>
- <div>
-            <h4>Own Ball Scores</h4>
-            <ul>
-                {Object.entries(scores).map(([userId, user]) => (
-                    <li key={userId}>
-                        {users[userId]?.name || userId}: {user.total}
-                    </li>
-                ))}
-            </ul></div></div>
+                <div>
+                    <h4>Own Ball Scores</h4>
+                    <ul>
+                        {Object.entries(scores).map(([userId, user]) => (
+                            <li key={userId}>
+                                {users[userId]?.name || userId}: {user.total}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
         </div>
     );
 };
