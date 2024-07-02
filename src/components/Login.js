@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import {  doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase'; // Ensure you import your Firestore instance
+import login from '../login.png'
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -67,11 +68,11 @@ const Login = () => {
 
     return (
         <div className='login'>
-            <h1>Login</h1>
+            <img src={login}/>
             <button type="button" onClick={handleGoogleLogin}>
-                Login with Google
+                Sign in with Google
             </button>
-            <br />
+           
             {error && <p>{error}</p>}
             <form onSubmit={handleLogin}>
                 <div>
@@ -83,7 +84,7 @@ const Login = () => {
                     <input type="password" id="password" value={password} onChange={handlePasswordChange} />
                 </div>
                 <br />
-                <button type="submit">Login</button>
+                <button type="submit">Sign in</button>
             </form>
         </div>
     );
