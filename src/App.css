@@ -5,6 +5,20 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* sign up */
+.signup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+
+.final {
+  display:flex;
+}
+
+
 /* Navbar styles */
 .navbar {
   position: sticky;

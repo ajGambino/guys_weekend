@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import {  doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase'; // Ensure you import your Firestore instance
 import login from '../login.png'
+
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -106,7 +107,9 @@ const Login = () => {
                     <input type="password" id="password" value={password} onChange={handlePasswordChange} />
                 </div>
                 <br />
-                <button className="login-btn" type="submit">Sign in</button>
+                <button className="login-btn" type="submit">Sign In</button>
+                <br/>
+               <Link to="/signup"> <button className="login-btn" type="submit">Sign Up</button> </Link>
             </form>
         </div>
     );

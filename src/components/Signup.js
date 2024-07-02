@@ -46,13 +46,13 @@ const Signup = () => {
     };
 
     return (
-        <div>
+        <div className='signup'>
             <h1>Sign Up</h1>
             {message && <p>{message}</p>}
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="name">Name:</label>
-                    <input type="text" id="name" value={name} onChange={handleNameChange} />
+                    <input className='signup-input' type="text" id="name" value={name} onChange={handleNameChange} />
                 </div>
                 <div>
                     <label htmlFor="email">Email:</label>
@@ -62,7 +62,7 @@ const Signup = () => {
                     <label htmlFor="password">Password:</label>
                     <input type="password" id="password" value={password} onChange={handlePasswordChange} />
                 </div>
-                <button type="submit">Sign Up</button>
+                <button className='login-btn' type="submit">Sign Up</button>
             </form>
         </div>
     );

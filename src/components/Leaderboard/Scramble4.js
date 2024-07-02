@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { ref, set, onValue, get } from 'firebase/database';
+import { ref, set, onValue, get, update } from 'firebase/database';
 import { rtdb, auth } from '../../firebase';
 
-const Scramble4 = ({ scores, teamTotals, users }) => {
+const Scramble4 = ({ users }) => {
     const [localScores, setLocalScores] = useState(Array(9).fill(''));
-
+    const [teamRows, setTeamRows] = useState([]);
+    const [teamScores, setTeamScores] = useState({
+        'teamScramble4_1': Array(9).fill(0),
+        'teamScramble4_2': Array(9).fill(0),
+    });
     const currentUser = auth.currentUser;
     const userId = currentUser.uid;
     const teamId = users[userId]?.teamId;
+    const authorizedUID = "riyzNX38qTQ04YtB2tHOM5EP7Aj1"; 
 
     useEffect(() => {
         if (teamId) {
@@ -21,60 +26,64 @@ const Scramble4 = ({ scores, teamTotals, users }) => {
                         fetchedScores[hole - 1] = data[hole];
                     });
                     setLocalScores(fetchedScores);
+                    setTeamScores(prev => ({ ...prev, [teamScramble4Id]: fetchedScores }));
                 }
             });
         }
     }, [teamId]);
+
+    useEffect(() => {
+        const updateTeamRows = async () => {
+            const teamRowsData = [
+                { teamName: 'NA$$TY & Aunkst / Greg & Turtle', teamScramble4Id: 'teamScramble4_2' },
+                { teamName: 'AJ & Cleve / Craig & Det', teamScramble4Id: 'teamScramble4_1' },
+            ];
+
+            const fetchedTeamRows = await Promise.all(
+                teamRowsData.map(async ({ teamName, teamScramble4Id }) => {
+                    const teamScores = await getTeamScores(teamScramble4Id);
+                    const { relativeToPar, holesCompleted } = calculateRelativeToPar(teamScores);
+                    return { teamName, teamScramble4Id, teamScores, relativeToPar, holesCompleted };
+                })
+            );
+
+            fetchedTeamRows.sort((a, b) => a.relativeToPar - b.relativeToPar);
+            setTeamRows(fetchedTeamRows);
+        };
+
+        updateTeamRows();
+    }, [teamScores]);
 
     const handleChange = (holeIndex, value) => {
         if (value === '' || /^\d+$/.test(value)) {
             const newScores = [...localScores];
             newScores[holeIndex] = value;
             setLocalScores(newScores);
-            handleSubmit(newScores); // Call handleSubmit to update scores immediately
+            handleSubmit(newScores); 
         } else {
             alert('Please enter a valid score (0 or any positive whole number).');
         }
     };
 
     const handleSubmit = async (newScores = localScores) => {
-        const userId = currentUser.uid;
-        const userScoresRef = ref(rtdb, `scores/scramble4/${userId}/holes`);
         const teamScramble4Id = teamId === 'team1' || teamId === 'team3' ? 'teamScramble4_1' : 'teamScramble4_2';
-
         const scoresToSubmit = newScores.map(score => (score === '' ? '0' : score));
         const totalScore = scoresToSubmit.reduce((acc, score) => acc + Number(score), 0);
 
-        await set(userScoresRef, scoresToSubmit.reduce((acc, score, index) => {
+        await set(ref(rtdb, `scores/scramble4/${teamScramble4Id}/total`), totalScore);
+        await set(ref(rtdb, `scores/scramble4/${teamScramble4Id}/holes`), scoresToSubmit.reduce((acc, score, index) => {
             acc[index + 1] = Number(score);
             return acc;
         }, {}));
-
-        await set(ref(rtdb, `scores/scramble4/${userId}/total`), totalScore);
-
-        // Update the team total
-        const teamScoresRef = ref(rtdb, `scores/scramble4/${teamScramble4Id}/holes`);
-        const teamSnapshot = await get(teamScoresRef);
-        const teamData = teamSnapshot.val() || {};
-        const updatedTeamData = { ...teamData };
-
-        scoresToSubmit.forEach((score, index) => {
-            updatedTeamData[index + 1] = Number(score);
-        });
-
-        await set(teamScoresRef, updatedTeamData);
     };
 
-    const getTeamScores = (teamScramble4Id) => {
+    const getTeamScores = async (teamScramble4Id) => {
         const teamScoresRef = ref(rtdb, `scores/scramble4/${teamScramble4Id}/holes`);
-        let teamScores = Array(9).fill(0);
-        onValue(teamScoresRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                Object.keys(data).forEach(hole => {
-                    teamScores[hole - 1] = data[hole];
-                });
-            }
+        const snapshot = await get(teamScoresRef);
+        const data = snapshot.val() || {};
+        const teamScores = Array(9).fill(0);
+        Object.keys(data).forEach(hole => {
+            teamScores[hole - 1] = data[hole];
         });
         return teamScores;
     };
@@ -92,22 +101,57 @@ const Scramble4 = ({ scores, teamTotals, users }) => {
         return { relativeToPar, holesCompleted };
     };
 
-    const teamRows = [
-        { teamName: 'AJ Cleve Craig Det', teamScramble4Id: 'teamScramble4_1' },
-        { teamName: 'NA$$TY Aunkst Greg Turtle', teamScramble4Id: 'teamScramble4_2' }
-    ];
+    const updateLeaderboard = async () => {
+        if (userId !== authorizedUID) {
+            alert("Only AJ can process leaderboard points");
+            return;
+        }
 
-    const sortedTeamRows = teamRows
-        .map(({ teamName, teamScramble4Id }) => {
-            const teamScores = getTeamScores(teamScramble4Id);
-            const { relativeToPar, holesCompleted } = calculateRelativeToPar(teamScores);
-            return { teamName, teamScramble4Id, teamScores, relativeToPar, holesCompleted };
-        })
-        .sort((a, b) => a.relativeToPar - b.relativeToPar);
+        const teamScores1 = await getTeamScores('teamScramble4_1');
+        const teamScores2 = await getTeamScores('teamScramble4_2');
+
+        const { relativeToPar: relativeToPar1 } = calculateRelativeToPar(teamScores1);
+        const { relativeToPar: relativeToPar2 } = calculateRelativeToPar(teamScores2);
+
+        let results = [
+            { teamID: 'team1', points: 0 },
+            { teamID: 'team2', points: 0 },
+            { teamID: 'team3', points: 0 },
+            { teamID: 'team4', points: 0 },
+        ];
+
+        if (relativeToPar1 < relativeToPar2) {
+            results[0].points = 3; // team1
+            results[2].points = 3; // team3
+        } else if (relativeToPar1 > relativeToPar2) {
+            results[1].points = 3; // team2
+            results[3].points = 3; // team4
+        }
+
+        for (const result of results) {
+            const teamRef = ref(rtdb, `teams/${result.teamID}`);
+            const snapshot = await get(teamRef);
+            const teamData = snapshot.val();
+
+            if (teamData) {
+                const updatedTeam = {
+                    ...teamData,
+                    '4man': result.points,
+                    'Pts': teamData['2man'] + result.points + teamData.alternate + teamData.own + teamData.shamble
+                };
+                await update(teamRef, updatedTeam);
+            } else {
+                console.log(`Team document with teamID ${result.teamID} does not exist`);
+            }
+        }
+    };
 
     return (
         <div className='scramble4'>
-            <h3>4-man Scramble</h3>
+            <div className='final'>
+                <h3>4-man Scramble</h3>
+                <button onClick={updateLeaderboard}>Final</button>
+            </div>
 
             <table className="styled-table">
                 <thead>
@@ -118,8 +162,8 @@ const Scramble4 = ({ scores, teamTotals, users }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {sortedTeamRows.map(({ teamName, relativeToPar, holesCompleted }) => (
-                        <tr key={teamName}>
+                    {teamRows.map(({ teamName, relativeToPar, holesCompleted }, index) => (
+                        <tr key={`${teamName}-${index}`}>
                             <td>{teamName}</td>
                             <td>{relativeToPar === 0 ? 'E' : relativeToPar > 0 ? `+${relativeToPar}` : relativeToPar}</td>
                             <td>{holesCompleted}</td>
@@ -162,16 +206,20 @@ const Scramble4 = ({ scores, teamTotals, users }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {sortedTeamRows.map(({ teamName, teamScramble4Id, teamScores }) => (
-                        <tr key={teamScramble4Id}>
+                    {[
+                        { teamName: 'NA$$TY & Aunkst / Greg & Turtle', teamScramble4Id: 'teamScramble4_2' },
+                        { teamName: 'AJ & Cleve / Craig & Det', teamScramble4Id: 'teamScramble4_1' },
+                    ].map(({ teamName, teamScramble4Id }, index) => (
+                        <tr key={`${teamScramble4Id}-${index}`}>
                             <td>{teamName}</td>
-                            {teamScores.map((score, index) => (
-                                <td key={index}>{score}</td>
+                            {teamScores[teamScramble4Id].map((score, i) => (
+                                <td key={i}>{score}</td>
                             ))}
                         </tr>
                     ))}
                 </tbody>
             </table>
+
             <h3 className="scorecard-title">Scorecard</h3>
             <div className='scorecard-row'>
                 <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
@@ -185,9 +233,6 @@ const Scramble4 = ({ scores, teamTotals, users }) => {
                             />
                         </div>
                     ))}
-                    {/* <div className='submit-btn-container'>
-                        <button className='submit-btn' type="submit">Submit Scores</button>
-                    </div> */}
                 </form>
             </div>
         </div>
