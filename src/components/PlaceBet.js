@@ -198,7 +198,7 @@ const PlaceBet = () => {
                 {currentUser ? (
                     <>
                         <div className='bet-form-container'>
-                           <div className='bet-flexbox'>
+                          
                            <div className='bet-form'>
                             <div>
                                 <label id="bet-amount-label" htmlFor="amount">Bet Amount: </label>
@@ -275,7 +275,7 @@ const PlaceBet = () => {
                             </button>
                             <button onClick={handlePlaceBet}>Place Bet</button>
                             
-                            </div></div>
+                            </div>
                             <div className='recent-bets'>
                                 <h2>Recent Bets</h2>
                                 {bets.length === 0 ? (
