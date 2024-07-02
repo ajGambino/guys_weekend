@@ -424,9 +424,9 @@ label {
     box-sizing: border-box;
   }
 
-  .input-container label {
+  /* .input-container label {
     white-space: nowrap;
-  }
+  } */
 
   .input-container input {
     font-size: 16px;
