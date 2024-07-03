@@ -200,7 +200,6 @@ const PlaceBet = () => {
                         <div className='bet-form-container'>
                         <div className='bet-flex'>
                            <div className='bet-form'>
-                           
                            <div>
                                 <label id="bet-amount-label" htmlFor="amount">Bet Amount: </label>
                                 <input 
