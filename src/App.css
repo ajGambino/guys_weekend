@@ -320,7 +320,7 @@ h1, h2 {
 }
 
 .bet-flex {
-  width: 50%;
+  width: 60%;
   margin: 0 auto;
 }
 
@@ -404,13 +404,22 @@ label {
   background-color: #007f67;
 }
 
-.bet-btn, .confirm {
+.bet-btn {
   background-color: #009879;
   border-color: #007f67;
   border-radius: 1rem;
-  padding: 0 .5rem;
+  padding: .3rem .5rem;
   color: white;
   width: 100%;
+}
+
+.confirm {
+  background-color: #009879;
+  border-color: #007f67;
+  border-radius: 1rem;
+  padding: .3rem .5rem;
+  color: white;
+  width: 7rem;
 }
 
 .dropdown {
@@ -493,6 +502,15 @@ label {
       font-size: 1.2rem;
     }
 
+
+    .void {
+      background-color: red;
+      border-color: white;
+      border-radius: 1rem;
+      padding: .3rem .5rem;
+      color: white;
+      width: 7rem;
+    }
 
 @media (max-width: 768px) {
   .results-container {

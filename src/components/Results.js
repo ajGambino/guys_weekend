@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import {  collection, query, orderBy, getDocs, doc, updateDoc } from 'firebase/firestore';
-import { db, auth } from '../firebase'; // Import your initialized Firebase services
+import { collection, query, orderBy, getDocs, doc, updateDoc, deleteDoc, getDoc, where } from 'firebase/firestore';
+import { db, auth } from '../firebase';
 
 const Results = () => {
     const [results, setResults] = useState([]);
 
+    const currentUser = auth.currentUser;  // Moved currentUser variable outside of functions
+
     useEffect(() => {
-        // Fetch results from Firebase Firestore
         const fetchResults = async () => {
             try {
                 const betsQuery = query(collection(db, 'bets'), orderBy('timestamp', 'desc'));
@@ -24,24 +25,40 @@ const Results = () => {
         fetchResults();
     }, []);
 
-    // Logic for confirming the bet
-    const handleConfirmBet = async (betId, placedBy) => {
-        const currentUser = auth.currentUser;
-
-        if (currentUser.uid === placedBy) {
-            console.error("Sorry, you cannot confirm a bet you recorded.");
+    const handleConfirmBet = async (betId, placedBy, betData) => {
+        if (betData.winner === currentUser.displayName || betData.additionalWinner === currentUser.displayName) {
+            console.error("Sorry, you cannot confirm a bet you won.");
             return;
         }
 
         try {
-            // Update the Firestore document with the user's name in the confirmedBy field
             const betRef = doc(db, 'bets', betId);
             await updateDoc(betRef, {
                 confirmed: true,
                 confirmedBy: currentUser.displayName,
             });
 
-            // Update the results state to reflect the updated confirmation
+            const amount = betData.amount;
+
+            const updateNet = async (userId, netChange) => {
+                const userRef = doc(db, 'users', userId);
+                const userSnapshot = await getDoc(userRef);
+                if (userSnapshot.exists()) {
+                    const userData = userSnapshot.data();
+                    const newNet = (userData.net || 0) + netChange;
+                    await updateDoc(userRef, { net: newNet });
+                }
+            };
+
+            const winnerQuery = query(collection(db, 'users'), where('name', 'in', [betData.winner, betData.additionalWinner]));
+            const loserQuery = query(collection(db, 'users'), where('name', 'in', [betData.loser, betData.additionalLoser]));
+
+            const winnerSnapshot = await getDocs(winnerQuery);
+            const loserSnapshot = await getDocs(loserQuery);
+
+            winnerSnapshot.forEach((doc) => updateNet(doc.id, amount));
+            loserSnapshot.forEach((doc) => updateNet(doc.id, -amount));
+
             setResults((prevResults) =>
                 prevResults.map((result) => {
                     if (result.id === betId) {
@@ -55,13 +72,24 @@ const Results = () => {
         }
     };
 
-    const currentUser = auth.currentUser;
+    const handleVoidBet = async (betId, betData) => {
+        if (betData.loser === currentUser.displayName || betData.additionalLoser === currentUser.displayName) {
+            console.error("Sorry, you cannot void a bet you lost.");
+            return;
+        }
+
+        try {
+            await deleteDoc(doc(db, 'bets', betId));
+            setResults((prevResults) => prevResults.filter((result) => result.id !== betId));
+        } catch (error) {
+            console.error('Error voiding bet:', error);
+        }
+    };
 
     return (
         <div className="results-page">
             <h2>History</h2>
             <div className="results-container">
-                
                 {results.map((result, index) => {
                     const matchNumber = results.length - index;
                     return (
@@ -82,17 +110,18 @@ const Results = () => {
                             {result.confirmed ? (
                                 <p>Confirmed by: {result.confirmedBy}</p>
                             ) : (
-                                currentUser && (
-                                    <>
-                                        {currentUser.uid === result.placedBy ? (
-                                            <p>Sorry, you cannot confirm a bet you recorded.</p>
-                                        ) : (
-                                            <button className='confirm' onClick={() => handleConfirmBet(result.id, result.placedBy)}>
-                                                Confirm?
-                                            </button>
-                                        )}
-                                    </>
-                                )
+                                <>
+                                    {currentUser && currentUser.displayName !== result.winner && currentUser.displayName !== result.additionalWinner && (
+                                        <button className='confirm' onClick={() => handleConfirmBet(result.id, result.placedBy, result)}>
+                                            Confirm?
+                                        </button>
+                                    )}
+                                    {currentUser && currentUser.displayName !== result.loser && currentUser.displayName !== result.additionalLoser && (
+                                        <button className='void' onClick={() => handleVoidBet(result.id, result)}>
+                                            Void?
+                                        </button>
+                                    )}
+                                </>
                             )}
                         </div>
                     );

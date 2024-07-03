@@ -81,7 +81,6 @@ const PlaceBet = () => {
         fetchBets();
     }, []);
 
-    
     const handlePlaceBet = async () => {
         const amount = Number(betAmount);
 
@@ -116,53 +115,12 @@ const PlaceBet = () => {
 
         try {
             const timestamp = serverTimestamp();
-            const amount = Number(betAmount);
-
-            const winnerQuerySnapshot = await getDocs(query(collection(db, 'users'), where('name', 'in', [betWinner, additionalWinner])));
-
-            if (winnerQuerySnapshot.empty) {
-                console.error('Error placing bet: Invalid winner or additional winner.');
-                return;
-            }
-
-            winnerQuerySnapshot.forEach(async (winnerDoc) => {
-                const winnerNet = winnerDoc.data().net || 0;
-                await updateDoc(doc(db, 'users', winnerDoc.id), { net: winnerNet + amount });
-            });
-
-            if (betLoser === 'ALL') {
-                const playersQuerySnapshot = await getDocs(collection(db, 'users'));
-
-                playersQuerySnapshot.forEach(async (playerDoc) => {
-                    const playerId = playerDoc.id;
-                    if (!winnerQuerySnapshot.docs.some((doc) => doc.id === playerId)) {
-                        const playerNet = playerDoc.data().net || 0;
-                        await updateDoc(doc(db, 'users', playerDoc.id), { net: playerNet - amount });
-                    }
-                });
-
-                winnerQuerySnapshot.forEach(async (winnerDoc) => {
-                    const winnerNet = winnerDoc.data().net || 0;
-                    await updateDoc(doc(db, 'users', winnerDoc.id), { net: winnerNet + 7 * amount });
-                });
-            } else {
-                const loserQuerySnapshot = await getDocs(query(collection(db, 'users'), where('name', 'in', [betLoser, additionalLoser])));
-
-                if (loserQuerySnapshot.empty) {
-                    console.error('Error placing bet: Invalid loser or additional loser.');
-                    return;
-                }
-
-                loserQuerySnapshot.forEach(async (loserDoc) => {
-                    const loserNet = loserDoc.data().net || 0;
-                    await updateDoc(doc(db, 'users', loserDoc.id), { net: loserNet - amount });
-                });
-            }
 
             const betRef = await addDoc(collection(db, 'bets'), {
                 additionalLoser,
                 additionalWinner,
                 amount,
+                confirmed: false,
                 confirmedBy: "",
                 description,
                 loser: betLoser,
@@ -268,12 +226,10 @@ const PlaceBet = () => {
                                     />
                                 )}
                             </div>
-                            
                             <button className='bet-btn'onClick={handleTeamSelectionClick}>
                                 {showAdditionalFields ? 'Hide Teams' : 'Teams?'}
                             </button>
                             <button className='bet-btn' onClick={handlePlaceBet}>Place Bet</button>
-                            
                             </div></div>
                             <div className='recent-bets'>
                                 <h2>Recent Bets</h2>

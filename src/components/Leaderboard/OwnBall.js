@@ -182,7 +182,7 @@ const OwnBall = ({ users }) => {
 
             if (teamData) {
                 const newPoints = parseFloat(points);
-                const totalPoints = parseFloat(teamData['2man']) + parseFloat(teamData['4man']) + parseFloat(teamData.own) + parseFloat(teamData.alternate) + newPoints;
+                const totalPoints = parseFloat(teamData['2man']) + parseFloat(teamData['4man']) + newPoints + parseFloat(teamData.alternate) + parseFloat(teamData.shamble);
 
                 await update(teamRef, {
                     'own': newPoints,

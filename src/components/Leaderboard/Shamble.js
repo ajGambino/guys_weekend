@@ -5,13 +5,8 @@ import { rtdb, auth } from '../../firebase';
 const Shamble = ({ users }) => {
     const [localScores, setLocalScores] = useState(Array(9).fill(''));
     const [teamRows, setTeamRows] = useState([]);
-    const [teamScores, setTeamScores] = useState({
-        'team1': Array(9).fill([0, 0]),
-        'team2': Array(9).fill([0, 0]),
-        'team3': Array(9).fill([0, 0]),
-        'team4': Array(9).fill([0, 0]),
-    });
     const [userScores, setUserScores] = useState({});
+    const [teamScores, setTeamScores] = useState({});
 
     const currentUser = auth.currentUser;
     const userId = currentUser.uid;
@@ -67,7 +62,7 @@ const Shamble = ({ users }) => {
         };
 
         updateTeamRows();
-    }, [teamScores]);
+    }, [userScores]);
 
     const handleChange = async (holeIndex, value) => {
         if (value === '' || /^\d+$/.test(value)) {
