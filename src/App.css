@@ -334,6 +334,7 @@ h1, h2 {
 
 .recent-bets h2 {
   margin-left: 2rem;
+  margin-bottom: -.01rem;
 }
 
 #other-input {
