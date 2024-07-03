@@ -477,7 +477,7 @@ label {
     .solo-scores {
       display: flex;
       flex-direction: column;
-      height: 50vh;
+      height: 40vh;
       justify-content: space-between;
       align-items: flex-start;
       margin: -.5rem 0 0 0 ;
