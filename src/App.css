@@ -409,6 +409,7 @@ label {
 .dropdown {
   background-color: white;
   color: #007f67;
+  margin: .2rem 0;
 }
   
 .final button {
