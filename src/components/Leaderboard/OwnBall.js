@@ -279,9 +279,9 @@ const OwnBall = ({ users }) => {
                         ))}
                     </form>
                 </div>
-                <div>
+                <div >
                     <h4>Own Ball Scores</h4>
-                    <ul>
+                    <ul className="solo-scores">
                         {Object.entries(userScores)
                             .filter(([userId]) => !userId.startsWith('team'))
                             .map(([userId, user]) => (

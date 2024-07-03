@@ -288,7 +288,7 @@ const Shamble = ({ users }) => {
                 </div>
                 <div>
                     <h4>Shamble Scores</h4>
-                    <ul>
+                    <ul className="solo-scores">
                         {Object.entries(userScores)
                             .filter(([userId]) => !userId.startsWith('team'))
                             .map(([userId, user]) => (
