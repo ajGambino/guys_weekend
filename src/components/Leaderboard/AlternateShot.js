@@ -4,13 +4,13 @@ import { rtdb, auth } from '../../firebase';
 
 const AlternateShot = ({ users }) => {
 	const [localScores, setLocalScores] = useState(Array(9).fill(''));
+	const [teamRows, setTeamRows] = useState([]);
 	const [teamScores, setTeamScores] = useState({
 		team1: Array(9).fill(0),
 		team2: Array(9).fill(0),
 		team3: Array(9).fill(0),
 		team4: Array(9).fill(0),
 	});
-	const [teamRows, setTeamRows] = useState([]);
 
 	const currentUser = auth.currentUser;
 	const userId = currentUser.uid;
@@ -19,33 +19,30 @@ const AlternateShot = ({ users }) => {
 
 	const parValues = [4, 4, 3, 4, 4, 5, 3, 4, 4]; // Par values for each hole
 
+	// Fetch team scores on component mount
 	useEffect(() => {
-		if (teamId) {
-			const userScoresRef = ref(rtdb, `scores/alternateShot/${userId}/holes`);
-			onValue(userScoresRef, (snapshot) => {
-				const data = snapshot.val();
-				if (data) {
-					const fetchedScores = Array(9).fill('');
-					Object.keys(data).forEach((hole) => {
-						fetchedScores[hole - 1] = data[hole];
-					});
-					setLocalScores(fetchedScores);
-				}
-			});
+		const teamScoresRef = ref(rtdb, 'scores/alternateShot');
+		onValue(teamScoresRef, (snapshot) => {
+			const data = snapshot.val();
+			if (data) {
+				const updatedTeamScores = {
+					team1: Array(9).fill(0),
+					team2: Array(9).fill(0),
+					team3: Array(9).fill(0),
+					team4: Array(9).fill(0),
+				};
 
-			const teamScoresRef = ref(rtdb, `scores/alternateShot/${teamId}/holes`);
-			onValue(teamScoresRef, (snapshot) => {
-				const data = snapshot.val();
-				if (data) {
-					const fetchedTeamScores = Array(9).fill(0);
-					Object.keys(data).forEach((hole) => {
-						fetchedTeamScores[hole - 1] = data[hole];
+				Object.keys(data).forEach((teamId) => {
+					const teamData = data[teamId].holes;
+					Object.keys(teamData).forEach((hole) => {
+						updatedTeamScores[teamId][hole - 1] = teamData[hole];
 					});
-					setTeamScores((prev) => ({ ...prev, [teamId]: fetchedTeamScores }));
-				}
-			});
-		}
-	}, [teamId, userId]);
+				});
+
+				setTeamScores(updatedTeamScores);
+			}
+		});
+	}, []);
 
 	useEffect(() => {
 		const updateTeamRows = async () => {
@@ -91,7 +88,7 @@ const AlternateShot = ({ users }) => {
 
 	const handleSubmit = async (newScores = localScores) => {
 		const userScoresRef = ref(rtdb, `scores/alternateShot/${userId}/holes`);
-		const teamScoresRef = ref(rtdb, `scores/alternateShot/${teamId}/holes`);
+		const teamId = users[userId]?.teamId;
 
 		const scoresToSubmit = newScores.map((score) =>
 			score === '' ? '0' : score
@@ -111,6 +108,7 @@ const AlternateShot = ({ users }) => {
 
 		await set(ref(rtdb, `scores/alternateShot/${userId}/total`), totalScore);
 
+		const teamScoresRef = ref(rtdb, `scores/alternateShot/${teamId}/holes`);
 		const teamSnapshot = await get(teamScoresRef);
 		const teamData = teamSnapshot.val() || {};
 		const updatedTeamData = { ...teamData };
