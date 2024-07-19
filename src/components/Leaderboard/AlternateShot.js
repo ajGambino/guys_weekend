@@ -281,7 +281,7 @@ const AlternateShot = ({ users }) => {
 						<th>555</th>
 						<th>215</th>
 						<th>346</th>
-						<th>375</th>
+						<th>3750</th>
 					</tr>
 					<tr>
 						<th>Par</th>
