@@ -19,10 +19,24 @@ const AlternateShot = ({ users }) => {
 
 	const parValues = [4, 4, 3, 4, 4, 5, 3, 4, 4]; // Par values for each hole
 
-	// Fetch team scores on component mount
 	useEffect(() => {
-		const teamScoresRef = ref(rtdb, 'scores/alternateShot');
-		onValue(teamScoresRef, (snapshot) => {
+		if (teamId) {
+			const teamScoresRef = ref(rtdb, `scores/alternateShot/${teamId}/holes`);
+			onValue(teamScoresRef, (snapshot) => {
+				const data = snapshot.val();
+				if (data) {
+					const fetchedScores = Array(9).fill('');
+					Object.keys(data).forEach((hole) => {
+						fetchedScores[hole - 1] = data[hole];
+					});
+					setLocalScores(fetchedScores);
+					setTeamScores((prev) => ({ ...prev, [teamId]: fetchedScores }));
+				}
+			});
+		}
+
+		const allTeamScoresRef = ref(rtdb, 'scores/alternateShot');
+		onValue(allTeamScoresRef, (snapshot) => {
 			const data = snapshot.val();
 			if (data) {
 				const updatedTeamScores = {
@@ -42,12 +56,12 @@ const AlternateShot = ({ users }) => {
 				setTeamScores(updatedTeamScores);
 			}
 		});
-	}, []);
+	}, [teamId]);
 
 	useEffect(() => {
 		const updateTeamRows = async () => {
 			const teamRowsData = [
-				{ teamName: 'AJ & Cleve', teamId: 'team1' },
+				{ teamName: 'AJ & Bosko', teamId: 'team1' },
 				{ teamName: 'Craig & Det', teamId: 'team3' },
 				{ teamName: 'NA$$TY & Aunkst', teamId: 'team2' },
 				{ teamName: 'Greg & Turtle', teamId: 'team4' },
@@ -118,7 +132,6 @@ const AlternateShot = ({ users }) => {
 		});
 
 		await set(teamScoresRef, updatedTeamData);
-		setTeamScores((prev) => ({ ...prev, [teamId]: scoresToSubmit }));
 	};
 
 	const getTeamScores = async (teamId) => {
@@ -204,9 +217,9 @@ const AlternateShot = ({ users }) => {
 				const totalPoints =
 					parseFloat(teamData['2man']) +
 					parseFloat(teamData['4man']) +
-					parseFloat(teamData.own) +
-					parseFloat(teamData.shamble) +
-					newPoints;
+					newPoints +
+					parseFloat(teamData.alternate) +
+					parseFloat(teamData.shamble);
 
 				await update(teamRef, {
 					alternate: newPoints,
@@ -279,7 +292,7 @@ const AlternateShot = ({ users }) => {
 				</thead>
 				<tbody>
 					{[
-						{ teamName: 'AJ & Cleve', teamId: 'team1' },
+						{ teamName: 'AJ & Bosko', teamId: 'team1' },
 						{ teamName: 'Craig & Det', teamId: 'team3' },
 						{ teamName: 'NA$$TY & Aunkst', teamId: 'team2' },
 						{ teamName: 'Greg & Turtle', teamId: 'team4' },
