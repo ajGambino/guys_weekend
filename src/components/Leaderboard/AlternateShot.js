@@ -212,6 +212,22 @@ const AlternateShot = ({ users }) => {
 		}
 	};
 
+	useEffect(() => {
+		if (teamId) {
+			const teamScoresRef = ref(rtdb, `scores/alternateShot/${teamId}/holes`);
+			onValue(teamScoresRef, (snapshot) => {
+				const data = snapshot.val();
+				if (data) {
+					const fetchedScores = Array(9).fill(0);
+					Object.keys(data).forEach((hole) => {
+						fetchedScores[hole - 1] = data[hole];
+					});
+					setTeamScores((prev) => ({ ...prev, [teamId]: fetchedScores }));
+				}
+			});
+		}
+	}, [teamId]);
+
 	return (
 		<div className='alt'>
 			<div className='final'>
