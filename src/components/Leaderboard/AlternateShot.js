@@ -4,7 +4,6 @@ import { rtdb, auth } from '../../firebase';
 
 const AlternateShot = ({ users }) => {
 	const [localScores, setLocalScores] = useState(Array(9).fill(''));
-	const [teamRows, setTeamRows] = useState([]);
 	const [teamScores, setTeamScores] = useState({
 		team1: Array(9).fill(0),
 		team2: Array(9).fill(0),
@@ -25,11 +24,10 @@ const AlternateShot = ({ users }) => {
 			onValue(teamScoresRef, (snapshot) => {
 				const data = snapshot.val();
 				if (data) {
-					const fetchedScores = Array(9).fill('');
+					const fetchedScores = Array(9).fill(0);
 					Object.keys(data).forEach((hole) => {
 						fetchedScores[hole - 1] = data[hole];
 					});
-					setLocalScores(fetchedScores);
 					setTeamScores((prev) => ({ ...prev, [teamId]: fetchedScores }));
 				}
 			});
@@ -37,35 +35,25 @@ const AlternateShot = ({ users }) => {
 	}, [teamId]);
 
 	useEffect(() => {
-		const updateTeamRows = async () => {
-			const teamRowsData = [
-				{ teamName: 'AJ & Cleve', teamId: 'team1' },
-				{ teamName: 'Craig & Det', teamId: 'team3' },
-				{ teamName: 'NA$$TY & Aunkst', teamId: 'team2' },
-				{ teamName: 'Greg & Turtle', teamId: 'team4' },
-			];
-
-			const fetchedTeamRows = await Promise.all(
-				teamRowsData.map(async ({ teamName, teamId }) => {
-					const teamScores = await getTeamScores(teamId);
-					const { relativeToPar, holesCompleted } =
-						calculateRelativeToPar(teamScores);
-					return {
-						teamName,
-						teamId,
-						teamScores,
-						relativeToPar,
-						holesCompleted,
-					};
-				})
-			);
-
-			fetchedTeamRows.sort((a, b) => a.relativeToPar - b.relativeToPar);
-			setTeamRows(fetchedTeamRows);
+		const updateTeamScores = () => {
+			const teams = ['team1', 'team2', 'team3', 'team4'];
+			teams.forEach((teamId) => {
+				const teamScoresRef = ref(rtdb, `scores/alternateShot/${teamId}/holes`);
+				onValue(teamScoresRef, (snapshot) => {
+					const data = snapshot.val();
+					if (data) {
+						const fetchedScores = Array(9).fill(0);
+						Object.keys(data).forEach((hole) => {
+							fetchedScores[hole - 1] = data[hole];
+						});
+						setTeamScores((prev) => ({ ...prev, [teamId]: fetchedScores }));
+					}
+				});
+			});
 		};
 
-		updateTeamRows();
-	}, [teamScores]);
+		updateTeamScores();
+	}, []);
 
 	const handleChange = (holeIndex, value) => {
 		if (value === '' || /^\d+$/.test(value)) {
@@ -80,7 +68,6 @@ const AlternateShot = ({ users }) => {
 
 	const handleSubmit = async (newScores = localScores) => {
 		const userId = currentUser.uid;
-		const userScoresRef = ref(rtdb, `scores/alternateShot/${userId}/holes`);
 		const teamId = users[userId]?.teamId;
 
 		const scoresToSubmit = newScores.map((score) =>
@@ -91,6 +78,7 @@ const AlternateShot = ({ users }) => {
 			0
 		);
 
+		const userScoresRef = ref(rtdb, `scores/alternateShot/${userId}/holes`);
 		await set(
 			userScoresRef,
 			scoresToSubmit.reduce((acc, score, index) => {
@@ -111,18 +99,6 @@ const AlternateShot = ({ users }) => {
 		});
 
 		await set(teamScoresRef, updatedTeamData);
-		setTeamScores((prev) => ({ ...prev, [teamId]: scoresToSubmit }));
-	};
-
-	const getTeamScores = async (teamId) => {
-		const teamScoresRef = ref(rtdb, `scores/alternateShot/${teamId}/holes`);
-		const snapshot = await get(teamScoresRef);
-		const data = snapshot.val() || {};
-		const teamScores = Array(9).fill(0);
-		Object.keys(data).forEach((hole) => {
-			teamScores[hole - 1] = data[hole];
-		});
-		return teamScores;
 	};
 
 	const calculateRelativeToPar = (teamScores) => {
