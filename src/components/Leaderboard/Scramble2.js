@@ -25,7 +25,7 @@ const Scramble2 = ({ users }) => {
 			onValue(teamScoresRef, (snapshot) => {
 				const data = snapshot.val();
 				if (data) {
-					const fetchedScores = Array(9).fill('');
+					const fetchedScores = Array(9).fill(0);
 					Object.keys(data).forEach((hole) => {
 						fetchedScores[hole - 1] = data[hole];
 					});
@@ -47,7 +47,7 @@ const Scramble2 = ({ users }) => {
 				};
 
 				Object.keys(data).forEach((teamId) => {
-					const teamData = data[teamId].holes;
+					const teamData = data[teamId]?.holes || {};
 					Object.keys(teamData).forEach((hole) => {
 						updatedTeamScores[teamId][hole - 1] = teamData[hole];
 					});
@@ -101,8 +101,6 @@ const Scramble2 = ({ users }) => {
 	};
 
 	const handleSubmit = async (newScores = localScores) => {
-		const teamId = users[userId]?.teamId;
-
 		const scoresToSubmit = newScores.map((score) =>
 			score === '' ? '0' : score
 		);
