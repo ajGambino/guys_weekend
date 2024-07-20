@@ -11,6 +11,7 @@ import { db, auth } from '../firebase';
 
 const Results = () => {
 	const [results, setResults] = useState([]);
+	const currentUser = auth.currentUser;
 
 	useEffect(() => {
 		const fetchResults = async () => {
@@ -34,7 +35,6 @@ const Results = () => {
 	}, []);
 
 	const handleConfirmBet = async (betId, result) => {
-		const currentUser = auth.currentUser;
 		const isWinner = [result.winnerId, result.additionalWinnerId].includes(
 			currentUser.uid
 		);
@@ -69,7 +69,6 @@ const Results = () => {
 	};
 
 	const handleVoidBet = async (betId, result) => {
-		const currentUser = auth.currentUser;
 		const isLoser = [result.loserId, result.additionalLoserId].includes(
 			currentUser.uid
 		);
@@ -93,8 +92,6 @@ const Results = () => {
 			console.error('Error voiding bet:', error);
 		}
 	};
-
-	const currentUser = auth.currentUser;
 
 	return (
 		<div className='results-page'>
