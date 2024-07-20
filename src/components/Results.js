@@ -35,10 +35,8 @@ const Results = () => {
 
 	const handleConfirmBet = async (betId, result) => {
 		const currentUser = auth.currentUser;
-		const currentUserId = currentUser.uid;
-
 		const isWinner = [result.winnerId, result.additionalWinnerId].includes(
-			currentUserId
+			currentUser.uid
 		);
 
 		if (isWinner) {
@@ -54,15 +52,15 @@ const Results = () => {
 			});
 
 			setResults((prevResults) =>
-				prevResults.map((res) => {
-					if (res.id === betId) {
+				prevResults.map((result) => {
+					if (result.id === betId) {
 						return {
-							...res,
+							...result,
 							confirmed: true,
 							confirmedBy: currentUser.displayName,
 						};
 					}
-					return res;
+					return result;
 				})
 			);
 		} catch (error) {
@@ -72,10 +70,8 @@ const Results = () => {
 
 	const handleVoidBet = async (betId, result) => {
 		const currentUser = auth.currentUser;
-		const currentUserId = currentUser.uid;
-
 		const isLoser = [result.loserId, result.additionalLoserId].includes(
-			currentUserId
+			currentUser.uid
 		);
 
 		if (isLoser) {
@@ -86,11 +82,11 @@ const Results = () => {
 		try {
 			await updateDoc(doc(db, 'bets', betId), { void: true });
 			setResults((prevResults) =>
-				prevResults.map((res) => {
-					if (res.id === betId) {
-						return { ...res, void: true };
+				prevResults.map((result) => {
+					if (result.id === betId) {
+						return { ...result, void: true };
 					}
-					return res;
+					return result;
 				})
 			);
 		} catch (error) {
