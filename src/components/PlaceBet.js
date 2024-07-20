@@ -95,25 +95,21 @@ const PlaceBet = () => {
 	const handlePlaceBet = async () => {
 		const amount = Number(betAmount);
 
-		// Validate that bet amount is not zero or negative
 		if (amount <= 0) {
 			alert('Please enter a valid bet amount greater than zero.');
 			return;
 		}
 
-		// Validate that both winner and loser are selected
 		if (!betWinner || !betLoser) {
 			alert('Please select both a winner and a loser.');
 			return;
 		}
 
-		// Check if the winner and loser are the same name
 		if (betWinner === betLoser) {
 			alert('Winner and loser cannot be the same name.');
 			return;
 		}
 
-		// Check if teams are selected and no name is used twice
 		if (showAdditionalFields) {
 			const teamMembers = [
 				betWinner,
@@ -132,6 +128,28 @@ const PlaceBet = () => {
 		try {
 			const timestamp = serverTimestamp();
 
+			const winnerQuery = query(
+				collection(db, 'users'),
+				where('name', 'in', [betWinner, additionalWinner])
+			);
+			const loserQuery = query(
+				collection(db, 'users'),
+				where('name', 'in', [betLoser, additionalLoser])
+			);
+
+			const [winnerSnapshot, loserSnapshot] = await Promise.all([
+				getDocs(winnerQuery),
+				getDocs(loserQuery),
+			]);
+
+			if (winnerSnapshot.empty || loserSnapshot.empty) {
+				console.error('Error placing bet: Invalid winner or loser.');
+				return;
+			}
+
+			const winnerIds = winnerSnapshot.docs.map((doc) => doc.id);
+			const loserIds = loserSnapshot.docs.map((doc) => doc.id);
+
 			const betRef = await addDoc(collection(db, 'bets'), {
 				additionalLoser,
 				additionalWinner,
@@ -140,9 +158,13 @@ const PlaceBet = () => {
 				confirmedBy: '',
 				description,
 				loser: betLoser,
+				additionalLoserId: loserIds[1] || '',
 				placedBy: currentUser.uid,
 				timestamp,
 				winner: betWinner,
+				winnerId: winnerIds[0] || '',
+				additionalWinnerId: winnerIds[1] || '',
+				loserId: loserIds[0] || '',
 			});
 
 			const betSnapshot = await getDoc(betRef);

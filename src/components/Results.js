@@ -35,6 +35,7 @@ const Results = () => {
 	}, []);
 
 	const handleConfirmBet = async (betId, result) => {
+		const currentUser = auth.currentUser;
 		const isWinner = [result.winnerId, result.additionalWinnerId].includes(
 			currentUser.uid
 		);
@@ -48,7 +49,7 @@ const Results = () => {
 			const betRef = doc(db, 'bets', betId);
 			await updateDoc(betRef, {
 				confirmed: true,
-				confirmedBy: currentUser.displayName,
+				confirmedBy: currentUser.uid, // Store UID
 			});
 
 			setResults((prevResults) =>
@@ -57,7 +58,7 @@ const Results = () => {
 						return {
 							...result,
 							confirmed: true,
-							confirmedBy: currentUser.displayName,
+							confirmedBy: currentUser.uid,
 						};
 					}
 					return result;
@@ -69,6 +70,7 @@ const Results = () => {
 	};
 
 	const handleVoidBet = async (betId, result) => {
+		const currentUser = auth.currentUser;
 		const isLoser = [result.loserId, result.additionalLoserId].includes(
 			currentUser.uid
 		);
