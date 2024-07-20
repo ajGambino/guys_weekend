@@ -6,6 +6,7 @@ import {
 	query,
 	where,
 	getDocs,
+	getDoc,
 	serverTimestamp,
 } from 'firebase/firestore';
 import PlayerForm from './PlayerForm';
