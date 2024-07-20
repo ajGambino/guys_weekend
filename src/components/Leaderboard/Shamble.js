@@ -166,7 +166,10 @@ const Shamble = ({ users }) => {
 				holesCompleted += 1;
 			}
 		});
-		return { relativeToPar, holesCompleted };
+		return {
+			relativeToPar: holesCompleted === 0 ? 0 : relativeToPar,
+			holesCompleted,
+		};
 	};
 
 	const updateLeaderboard = async () => {
