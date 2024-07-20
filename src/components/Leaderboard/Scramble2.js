@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ref, set, onValue, get, update } from 'firebase/database';
+import { ref, set, onValue, get } from 'firebase/database';
 import { rtdb, auth } from '../../firebase';
 
 const Scramble2 = ({ users }) => {
@@ -19,22 +19,24 @@ const Scramble2 = ({ users }) => {
 
 	const parValues = [3, 4, 3, 4, 5, 3, 5, 5, 4]; // Par values for each hole
 
+	// Set up listeners for team scores
 	useEffect(() => {
-		if (teamId) {
+		const teamIds = ['team1', 'team2', 'team3', 'team4'];
+		const listeners = teamIds.map((teamId) => {
 			const teamScoresRef = ref(rtdb, `scores/scramble2/${teamId}/holes`);
-			onValue(teamScoresRef, (snapshot) => {
+			return onValue(teamScoresRef, (snapshot) => {
 				const data = snapshot.val();
 				if (data) {
-					const fetchedScores = Array(9).fill('');
+					const fetchedScores = Array(9).fill(0);
 					Object.keys(data).forEach((hole) => {
 						fetchedScores[hole - 1] = data[hole];
 					});
-					setLocalScores(fetchedScores);
 					setTeamScores((prev) => ({ ...prev, [teamId]: fetchedScores }));
 				}
 			});
-		}
-	}, [teamId]);
+		});
+		return () => listeners.forEach((unsubscribe) => unsubscribe());
+	}, []);
 
 	useEffect(() => {
 		const updateTeamRows = async () => {
