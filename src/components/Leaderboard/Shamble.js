@@ -159,8 +159,9 @@ const Shamble = ({ users }) => {
 		let relativeToPar = 0;
 		let holesCompleted = 0;
 		teamScores.forEach((scores, index) => {
-			const totalScore = Number(scores[0]) + Number(scores[1]);
-			if (totalScore !== 0) {
+			const [score1, score2] = scores;
+			if (score1 !== '0' && score2 !== '0') {
+				const totalScore = Number(score1) + Number(score2);
 				relativeToPar += totalScore - 2 * parValues[index];
 				holesCompleted += 1;
 			}
