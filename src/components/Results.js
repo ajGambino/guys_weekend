@@ -35,8 +35,10 @@ const Results = () => {
 
 	const handleConfirmBet = async (betId, result) => {
 		const currentUser = auth.currentUser;
-		const isWinner = [result.winner, result.additionalWinner].includes(
-			currentUser.displayName
+		const currentUserId = currentUser.uid;
+
+		const isWinner = [result.winnerId, result.additionalWinnerId].includes(
+			currentUserId
 		);
 
 		if (isWinner) {
@@ -70,8 +72,10 @@ const Results = () => {
 
 	const handleVoidBet = async (betId, result) => {
 		const currentUser = auth.currentUser;
-		const isLoser = [result.loser, result.additionalLoser].includes(
-			currentUser.displayName
+		const currentUserId = currentUser.uid;
+
+		const isLoser = [result.loserId, result.additionalLoserId].includes(
+			currentUserId
 		);
 
 		if (isLoser) {
