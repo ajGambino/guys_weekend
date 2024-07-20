@@ -107,9 +107,6 @@ const Scramble2 = ({ users }) => {
 		const updatedTeamData = { ...teamData };
 
 		scoresToSubmit.forEach((score, index) => {
-			if (!updatedTeamData[index + 1]) {
-				updatedTeamData[index + 1] = 0; // Ensure data structure exists
-			}
 			updatedTeamData[index + 1] = Number(score);
 		});
 
