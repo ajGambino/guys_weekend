@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ref, set, onValue, get } from 'firebase/database';
+import { ref, set, onValue, get, update } from 'firebase/database'; // Added update here
 import { rtdb, auth } from '../../firebase';
 
 const Scramble2 = ({ users }) => {
