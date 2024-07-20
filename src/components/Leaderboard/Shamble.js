@@ -107,16 +107,15 @@ const Shamble = ({ users }) => {
 					const teamData = teamSnapshot.val() || {};
 					const updatedTeamData = { ...teamData };
 
+					const teammateId = Object.keys(users).find(
+						(uid) => users[uid].teamId === teamId && uid !== userId
+					);
+
 					scoresToSubmit.forEach((score, index) => {
 						if (!updatedTeamData[index + 1]) {
-							updatedTeamData[index + 1] = [0, 0];
+							updatedTeamData[index + 1] = ['0', '0'];
 						}
-						if (
-							userId ===
-							Object.keys(users).find(
-								(uid) => users[uid].teamId === teamId && uid !== userId
-							)
-						) {
+						if (userId === teammateId) {
 							updatedTeamData[index + 1][1] = Number(score);
 						} else {
 							updatedTeamData[index + 1][0] = Number(score);
@@ -137,7 +136,7 @@ const Shamble = ({ users }) => {
 		const teamScoresRef = ref(rtdb, `scores/shamble/${teamId}/holes`);
 		const snapshot = await get(teamScoresRef);
 		const data = snapshot.val() || {};
-		const teamScores = Array(9).fill([0, 0]);
+		const teamScores = Array(9).fill(['0', '0']);
 		Object.keys(data).forEach((hole) => {
 			teamScores[hole - 1] = data[hole];
 		});
@@ -148,8 +147,9 @@ const Shamble = ({ users }) => {
 		let relativeToPar = 0;
 		let holesCompleted = 0;
 		teamScores.forEach((scores, index) => {
-			if (scores[0] !== 0 && scores[1] !== 0) {
-				relativeToPar += scores[0] + scores[1] - 2 * parValues[index];
+			const totalScore = Number(scores[0]) + Number(scores[1]);
+			if (totalScore !== 0) {
+				relativeToPar += totalScore - 2 * parValues[index];
 				holesCompleted += 1;
 			}
 		});
@@ -296,8 +296,8 @@ const Shamble = ({ users }) => {
 								const [player1Score, player2Score] = scores;
 								return (
 									<td key={index}>
-										{player1Score !== 0 ? player1Score : ''}/
-										{player2Score !== 0 ? player2Score : ''}
+										{player1Score !== '0' ? player1Score : ''}/
+										{player2Score !== '0' ? player2Score : ''}
 									</td>
 								);
 							})}
