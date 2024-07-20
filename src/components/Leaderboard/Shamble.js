@@ -133,13 +133,25 @@ const Shamble = ({ users }) => {
 	};
 
 	const getTeamScores = async (teamId) => {
-		const teamScoresRef = ref(rtdb, `scores/shamble/${teamId}/holes`);
-		const snapshot = await get(teamScoresRef);
-		const data = snapshot.val() || {};
-		const teamScores = Array(9).fill(['0', '0']);
-		Object.keys(data).forEach((hole) => {
-			teamScores[hole - 1] = data[hole];
-		});
+		const teamMembers = Object.entries(users)
+			.filter(([userId, user]) => user.teamId === teamId)
+			.sort(([aId], [bId]) => (users[aId].name < users[bId].name ? -1 : 1));
+		const teamScores = Array(9)
+			.fill(0)
+			.map(() => ['0', '0']);
+		await Promise.all(
+			teamMembers.map(async ([userId], memberIndex) => {
+				const userScoresRef = ref(rtdb, `scores/shamble/${userId}/holes`);
+				const snapshot = await get(userScoresRef);
+				const userHoles = snapshot.val() || {};
+				Object.keys(userHoles).forEach((hole) => {
+					if (!teamScores[hole - 1]) {
+						teamScores[hole - 1] = ['0', '0'];
+					}
+					teamScores[hole - 1][memberIndex] = userHoles[hole];
+				});
+			})
+		);
 		return teamScores;
 	};
 
