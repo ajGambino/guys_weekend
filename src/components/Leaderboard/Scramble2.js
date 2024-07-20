@@ -25,7 +25,7 @@ const Scramble2 = ({ users }) => {
 			onValue(teamScoresRef, (snapshot) => {
 				const data = snapshot.val();
 				if (data) {
-					const fetchedScores = Array(9).fill(0);
+					const fetchedScores = Array(9).fill('');
 					Object.keys(data).forEach((hole) => {
 						fetchedScores[hole - 1] = data[hole];
 					});
@@ -34,28 +34,6 @@ const Scramble2 = ({ users }) => {
 				}
 			});
 		}
-
-		const allTeamScoresRef = ref(rtdb, 'scores/scramble2');
-		onValue(allTeamScoresRef, (snapshot) => {
-			const data = snapshot.val();
-			if (data) {
-				const updatedTeamScores = {
-					team1: Array(9).fill(0),
-					team2: Array(9).fill(0),
-					team3: Array(9).fill(0),
-					team4: Array(9).fill(0),
-				};
-
-				Object.keys(data).forEach((teamId) => {
-					const teamData = data[teamId]?.holes || {};
-					Object.keys(teamData).forEach((hole) => {
-						updatedTeamScores[teamId][hole - 1] = teamData[hole];
-					});
-				});
-
-				setTeamScores(updatedTeamScores);
-			}
-		});
 	}, [teamId]);
 
 	useEffect(() => {
@@ -101,6 +79,10 @@ const Scramble2 = ({ users }) => {
 	};
 
 	const handleSubmit = async (newScores = localScores) => {
+		if (!teamId) return; // Ensure teamId is valid
+
+		const userScoresRef = ref(rtdb, `scores/scramble2/${userId}/holes`);
+
 		const scoresToSubmit = newScores.map((score) =>
 			score === '' ? '0' : score
 		);
@@ -109,17 +91,29 @@ const Scramble2 = ({ users }) => {
 			0
 		);
 
+		await set(
+			userScoresRef,
+			scoresToSubmit.reduce((acc, score, index) => {
+				acc[index + 1] = Number(score);
+				return acc;
+			}, {})
+		);
+
+		await set(ref(rtdb, `scores/scramble2/${userId}/total`), totalScore);
+
 		const teamScoresRef = ref(rtdb, `scores/scramble2/${teamId}/holes`);
 		const teamSnapshot = await get(teamScoresRef);
 		const teamData = teamSnapshot.val() || {};
 		const updatedTeamData = { ...teamData };
 
 		scoresToSubmit.forEach((score, index) => {
+			if (!updatedTeamData[index + 1]) {
+				updatedTeamData[index + 1] = 0; // Ensure data structure exists
+			}
 			updatedTeamData[index + 1] = Number(score);
 		});
 
 		await set(teamScoresRef, updatedTeamData);
-		await set(ref(rtdb, `scores/scramble2/${teamId}/total`), totalScore);
 	};
 
 	const getTeamScores = async (teamId) => {
@@ -250,7 +244,7 @@ const Scramble2 = ({ users }) => {
 					))}
 				</tbody>
 			</table>
-			{/* 
+
 			<table className='styled-table'>
 				<thead>
 					<tr>
@@ -285,7 +279,7 @@ const Scramble2 = ({ users }) => {
 						{ teamName: 'NA$$TY & Aunkst', teamId: 'team2' },
 						{ teamName: 'Greg & Turtle', teamId: 'team4' },
 					].map(({ teamName, teamId }) => {
-						const scores = teamScores[teamId];
+						const scores = teamScores[teamId] || Array(9).fill(0);
 						return (
 							<tr key={teamId}>
 								<td>{teamName}</td>
@@ -296,7 +290,7 @@ const Scramble2 = ({ users }) => {
 						);
 					})}
 				</tbody>
-			</table> */}
+			</table>
 
 			<h3 className='scorecard-title'>Scorecard</h3>
 			<div className='scorecard-row'>
