@@ -21,8 +21,8 @@ const Scramble2 = ({ users }) => {
 
 	useEffect(() => {
 		if (teamId) {
-			const userScoresRef = ref(rtdb, `scores/scramble2/${userId}/holes`);
-			onValue(userScoresRef, (snapshot) => {
+			const teamScoresRef = ref(rtdb, `scores/scramble2/${teamId}/holes`);
+			onValue(teamScoresRef, (snapshot) => {
 				const data = snapshot.val();
 				if (data) {
 					const fetchedScores = Array(9).fill('');
@@ -30,18 +30,7 @@ const Scramble2 = ({ users }) => {
 						fetchedScores[hole - 1] = data[hole];
 					});
 					setLocalScores(fetchedScores);
-				}
-			});
-
-			const teamScoresRef = ref(rtdb, `scores/scramble2/${teamId}/holes`);
-			onValue(teamScoresRef, (snapshot) => {
-				const data = snapshot.val();
-				if (data) {
-					const fetchedTeamScores = Array(9).fill(0);
-					Object.keys(data).forEach((hole) => {
-						fetchedTeamScores[hole - 1] = data[hole];
-					});
-					setTeamScores((prev) => ({ ...prev, [teamId]: fetchedTeamScores }));
+					setTeamScores((prev) => ({ ...prev, [teamId]: fetchedScores }));
 				}
 			});
 		}
@@ -112,6 +101,8 @@ const Scramble2 = ({ users }) => {
 	};
 
 	const handleSubmit = async (newScores = localScores) => {
+		const teamId = users[userId]?.teamId;
+
 		const scoresToSubmit = newScores.map((score) =>
 			score === '' ? '0' : score
 		);
@@ -119,17 +110,6 @@ const Scramble2 = ({ users }) => {
 			(acc, score) => acc + Number(score),
 			0
 		);
-
-		const userScoresRef = ref(rtdb, `scores/scramble2/${userId}/holes`);
-		await set(
-			userScoresRef,
-			scoresToSubmit.reduce((acc, score, index) => {
-				acc[index + 1] = Number(score);
-				return acc;
-			}, {})
-		);
-
-		await set(ref(rtdb, `scores/scramble2/${userId}/total`), totalScore);
 
 		const teamScoresRef = ref(rtdb, `scores/scramble2/${teamId}/holes`);
 		const teamSnapshot = await get(teamScoresRef);
@@ -141,6 +121,7 @@ const Scramble2 = ({ users }) => {
 		});
 
 		await set(teamScoresRef, updatedTeamData);
+		await set(ref(rtdb, `scores/scramble2/${teamId}/total`), totalScore);
 	};
 
 	const getTeamScores = async (teamId) => {
