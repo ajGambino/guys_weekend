@@ -250,7 +250,7 @@ const Scramble2 = ({ users }) => {
 					))}
 				</tbody>
 			</table>
-
+			{/* 
 			<table className='styled-table'>
 				<thead>
 					<tr>
@@ -296,7 +296,7 @@ const Scramble2 = ({ users }) => {
 						);
 					})}
 				</tbody>
-			</table>
+			</table> */}
 
 			<h3 className='scorecard-title'>Scorecard</h3>
 			<div className='scorecard-row'>
