@@ -6,8 +6,10 @@ import {
 	query,
 	where,
 	getDocs,
-	getDoc,
+	updateDoc,
+	doc,
 	serverTimestamp,
+	getDoc,
 } from 'firebase/firestore';
 import PlayerForm from './PlayerForm';
 import { useAuth } from './AuthContext';
@@ -65,10 +67,7 @@ const PlaceBet = () => {
 		const fetchPlayerNames = async () => {
 			try {
 				const snapshot = await getDocs(collection(db, 'users'));
-				const fetchedPlayerNames = snapshot.docs.map((doc) => ({
-					id: doc.id,
-					name: doc.data().name,
-				}));
+				const fetchedPlayerNames = snapshot.docs.map((doc) => doc.data().name);
 				setPlayerNames(fetchedPlayerNames);
 			} catch (error) {
 				console.error('Error fetching player names:', error);
@@ -96,21 +95,25 @@ const PlaceBet = () => {
 	const handlePlaceBet = async () => {
 		const amount = Number(betAmount);
 
+		// Validate that bet amount is not zero or negative
 		if (amount <= 0) {
 			alert('Please enter a valid bet amount greater than zero.');
 			return;
 		}
 
+		// Validate that both winner and loser are selected
 		if (!betWinner || !betLoser) {
 			alert('Please select both a winner and a loser.');
 			return;
 		}
 
+		// Check if the winner and loser are the same name
 		if (betWinner === betLoser) {
 			alert('Winner and loser cannot be the same name.');
 			return;
 		}
 
+		// Check if teams are selected and no name is used twice
 		if (showAdditionalFields) {
 			const teamMembers = [
 				betWinner,
@@ -129,41 +132,17 @@ const PlaceBet = () => {
 		try {
 			const timestamp = serverTimestamp();
 
-			const winnerQuery = query(
-				collection(db, 'users'),
-				where('name', 'in', [betWinner, additionalWinner])
-			);
-			const loserQuery = query(
-				collection(db, 'users'),
-				where('name', 'in', [betLoser, additionalLoser])
-			);
-
-			const [winnerSnapshot, loserSnapshot] = await Promise.all([
-				getDocs(winnerQuery),
-				getDocs(loserQuery),
-			]);
-
-			if (winnerSnapshot.empty || loserSnapshot.empty) {
-				console.error('Error placing bet: Invalid winner or loser.');
-				return;
-			}
-
-			const winnerIds = winnerSnapshot.docs.map((doc) => doc.id);
-			const loserIds = loserSnapshot.docs.map((doc) => doc.id);
-
 			const betRef = await addDoc(collection(db, 'bets'), {
-				amount,
-				description,
-				winner: betWinner,
-				additionalWinner,
-				loser: betLoser,
 				additionalLoser,
-				winnerId: winnerIds[0] || '',
-				additionalWinnerId: winnerIds[1] || '',
-				loserId: loserIds[0] || '',
-				additionalLoserId: loserIds[1] || '',
+				additionalWinner,
+				amount,
+				confirmed: false,
+				confirmedBy: '',
+				description,
+				loser: betLoser,
 				placedBy: currentUser.uid,
 				timestamp,
+				winner: betWinner,
 			});
 
 			const betSnapshot = await getDoc(betRef);
@@ -193,28 +172,28 @@ const PlaceBet = () => {
 				{currentUser ? (
 					<>
 						<div className='bet-form-container'>
-							<div className='bet-flex'>
-								<div className='bet-form'>
-									<div>
-										<label id='bet-amount-label' htmlFor='amount'>
-											Bet Amount:{' '}
-										</label>
-										<input
-											type='number'
-											id='amount'
-											value={betAmount}
-											onChange={handleBetAmountChange}
-											placeholder='$'
-										/>
-									</div>
-									<PlayerForm
-										label='Winner'
-										id='winner'
-										value={betWinner}
-										onChange={handleBetWinnerChange}
-										playerNames={playerNames}
+							<div className='bet-form'>
+								<div>
+									<label id='bet-amount-label' htmlFor='amount'>
+										Bet Amount:{' '}
+									</label>
+									<input
+										type='number'
+										id='amount'
+										value={betAmount}
+										onChange={handleBetAmountChange}
+										placeholder='$'
 									/>
-									{showAdditionalFields && (
+								</div>
+								<PlayerForm
+									label='Winner'
+									id='winner'
+									value={betWinner}
+									onChange={handleBetWinnerChange}
+									playerNames={playerNames}
+								/>
+								{showAdditionalFields && (
+									<>
 										<PlayerForm
 											label='Additional Winner'
 											id='additional-winner'
@@ -222,15 +201,17 @@ const PlaceBet = () => {
 											onChange={handleAdditionalWinnerChange}
 											playerNames={playerNames}
 										/>
-									)}
-									<PlayerForm
-										label='Loser'
-										id='loser'
-										value={betLoser}
-										onChange={handleBetLoserChange}
-										playerNames={playerNames}
-									/>
-									{showAdditionalFields && (
+									</>
+								)}
+								<PlayerForm
+									label='Loser'
+									id='loser'
+									value={betLoser}
+									onChange={handleBetLoserChange}
+									playerNames={playerNames}
+								/>
+								{showAdditionalFields && (
+									<>
 										<PlayerForm
 											label='Additional Loser'
 											id='additional-loser'
@@ -238,74 +219,71 @@ const PlaceBet = () => {
 											onChange={handleAdditionalLoserChange}
 											playerNames={playerNames}
 										/>
-									)}
-									<div>
-										<label htmlFor='description'>Description:</label>
-										<select
-											className='dropdown'
-											id='description'
-											value={betDescription}
-											onChange={handleBetDescriptionChange}
-										>
-											<option value='golf'>Golf</option>
-											<option value='pool'>Pool</option>
-											<option value='bags'>Bags</option>
-											<option value='other'>Other</option>
-										</select>
-										<br />
-										{betDescription === 'other' && (
-											<input
-												id='other-input'
-												type='text'
-												value={otherDescription}
-												onChange={(event) =>
-													setOtherDescription(event.target.value)
-												}
-												placeholder='Enter the custom description'
-											/>
-										)}
-									</div>
-									<button
-										className='bet-btn'
-										onClick={handleTeamSelectionClick}
-									>
-										{showAdditionalFields ? 'Hide Teams' : 'Teams?'}
-									</button>
-									<button className='bet-btn' onClick={handlePlaceBet}>
-										Place Bet
-									</button>
-								</div>
-							</div>
-							<div className='recent-bets'>
-								<h2>Recent Bets</h2>
-								{bets.length === 0 ? (
-									<p>No bets placed yet.</p>
-								) : (
-									<ul>
-										{bets.slice(0, 5).map((bet, index) => {
-											let sentence = '';
-
-											if (bet.additionalWinner && bet.additionalLoser) {
-												sentence = `${bet.winner} and ${bet.additionalWinner} won $${bet.amount} each from ${bet.loser} and ${bet.additionalLoser} in ${bet.description}.`;
-											} else if (bet.additionalWinner) {
-												sentence = `${bet.winner} and ${bet.additionalWinner} won $${bet.amount} each from ${bet.loser} in ${bet.description}.`;
-											} else if (bet.additionalLoser) {
-												sentence = `${bet.winner} won $${bet.amount} from ${bet.loser} and ${bet.additionalLoser} in ${bet.description}.`;
-											} else if (bet.loser === 'ALL') {
-												sentence = `${bet.winner} won $${bet.amount} from everyone in ${bet.description}.`;
-											} else {
-												sentence = `${bet.winner} won $${bet.amount} from ${bet.loser} in ${bet.description}.`;
-											}
-
-											return <li key={index}>{sentence}</li>;
-										})}
-									</ul>
+									</>
 								)}
+								<div>
+									<label htmlFor='description'>Description:</label>
+									<select
+										className='dropdown'
+										id='description'
+										value={betDescription}
+										onChange={handleBetDescriptionChange}
+									>
+										<option value='golf'>Golf</option>
+										<option value='pool'>Pool</option>
+										<option value='bags'>Bags</option>
+										<option value='other'>Other</option>
+									</select>
+									<br />
+									{betDescription === 'other' && (
+										<input
+											id='other-input'
+											type='text'
+											value={otherDescription}
+											onChange={(event) =>
+												setOtherDescription(event.target.value)
+											}
+											placeholder='Enter the custom description'
+										/>
+									)}
+								</div>
+								<button className='bet-btn' onClick={handleTeamSelectionClick}>
+									{showAdditionalFields ? 'Hide Teams' : 'Teams?'}
+								</button>
+								<button className='bet-btn' onClick={handlePlaceBet}>
+									Place Bet
+								</button>
 							</div>
+						</div>
+						<div className='recent-bets'>
+							<h2>Recent Bets</h2>
+							{bets.length === 0 ? (
+								<p>No bets placed yet.</p>
+							) : (
+								<ul>
+									{bets.slice(0, 5).map((bet, index) => {
+										let sentence = '';
+
+										if (bet.additionalWinner && bet.additionalLoser) {
+											sentence = `${bet.winner} and ${bet.additionalWinner} won $${bet.amount} each from ${bet.loser} and ${bet.additionalLoser} in ${bet.description}.`;
+										} else if (bet.additionalWinner) {
+											sentence = `${bet.winner} and ${bet.additionalWinner} won $${bet.amount} each from ${bet.loser} in ${bet.description}.`;
+										} else if (bet.additionalLoser) {
+											sentence = `${bet.winner} won $${bet.amount} from ${bet.loser} and ${bet.additionalLoser} in ${bet.description}.`;
+										} else if (bet.loser === 'ALL') {
+											sentence = `${bet.winner} won $${bet.amount} from everyone in ${bet.description}.`;
+										} else {
+											sentence = `${bet.winner} won $${bet.amount} from ${bet.loser} in ${bet.description}.`;
+										}
+
+										return <li key={index}>{sentence}</li>;
+									})}
+								</ul>
+							)}
 						</div>
 					</>
 				) : (
-					<p>Please sign in to place a bet.</p>
+					<p>Please log in to place a bet.</p>
 				)}
 			</div>
 		</div>
