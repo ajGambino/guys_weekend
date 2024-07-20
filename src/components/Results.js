@@ -54,15 +54,15 @@ const Results = () => {
 			});
 
 			setResults((prevResults) =>
-				prevResults.map((result) => {
-					if (result.id === betId) {
+				prevResults.map((res) => {
+					if (res.id === betId) {
 						return {
-							...result,
+							...res,
 							confirmed: true,
 							confirmedBy: currentUser.displayName,
 						};
 					}
-					return result;
+					return res;
 				})
 			);
 		} catch (error) {
@@ -86,11 +86,11 @@ const Results = () => {
 		try {
 			await updateDoc(doc(db, 'bets', betId), { void: true });
 			setResults((prevResults) =>
-				prevResults.map((result) => {
-					if (result.id === betId) {
-						return { ...result, void: true };
+				prevResults.map((res) => {
+					if (res.id === betId) {
+						return { ...res, void: true };
 					}
-					return result;
+					return res;
 				})
 			);
 		} catch (error) {
