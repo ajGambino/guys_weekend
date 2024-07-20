@@ -29,7 +29,6 @@ const Shamble = ({ users }) => {
 				}
 			});
 
-			// Fetch all user scores
 			const scoresRef = ref(rtdb, 'scores/shamble');
 			onValue(scoresRef, (snapshot) => {
 				const scoresData = snapshot.val();
@@ -160,7 +159,7 @@ const Shamble = ({ users }) => {
 		let holesCompleted = 0;
 		teamScores.forEach((scores, index) => {
 			const [score1, score2] = scores;
-			if (score1 !== '0' && score2 !== '0') {
+			if (Number(score1) > 0 && Number(score2) > 0) {
 				const totalScore = Number(score1) + Number(score2);
 				relativeToPar += totalScore - 2 * parValues[index];
 				holesCompleted += 1;
